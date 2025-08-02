@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Tracker - Zarar Kapama Sistemi</title>
+    <title>Trading Tracker</title>
     <style>
         * {
             margin: 0;
@@ -15,7 +15,12 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #f0f0f0;
         }
 
         .container {
@@ -26,6 +31,12 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             padding: 30px;
             backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .container {
+            background: rgba(30, 30, 50, 0.95);
+            color: #f0f0f0;
         }
 
         @media (max-width: 768px) {
@@ -41,6 +52,11 @@
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 3px solid #667eea;
+            position: relative;
+        }
+
+        body.dark-mode .header {
+            border-bottom: 3px solid #4a4a8a;
         }
 
         .header h1 {
@@ -48,15 +64,116 @@
             font-size: 2.2em;
             margin-bottom: 5px;
             font-weight: 700;
+            transition: all 0.3s ease;
         }
 
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.6em;
-            }
-            .header p {
-                font-size: 0.9em;
-            }
+        body.dark-mode .header h1 {
+            color: #f0f0f0;
+        }
+
+        .header p {
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .header p {
+            color: #d0d0d0;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .back-btn {
+            background: #4a4a8a;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .mode-toggle {
+            position: absolute;
+            right: 0;
+            top: 0;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .mode-toggle {
+            background: #4a4a8a;
+        }
+
+        .mode-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .mode-toggle i {
+            pointer-events: none;
+        }
+
+        .selection-screen {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+        }
+
+        .option-card {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .option-card {
+            background: linear-gradient(135deg, #1a3a8f 0%, #006d8f 100%);
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .option-card h2 {
+            color: white;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .option-card p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1em;
         }
 
         .inputs-section {
@@ -80,6 +197,11 @@
             border-radius: 15px;
             text-align: center;
             box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .input-group {
+            background: linear-gradient(135deg, #1a3a8f 0%, #006d8f 100%);
         }
 
         .input-group h3 {
@@ -98,6 +220,11 @@
             width: 120px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
+        }
+
+        body.dark-mode .input-field {
+            background: #2d2d4d;
+            color: #f0f0f0;
         }
 
         .input-field:focus {
@@ -126,6 +253,11 @@
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .t-levels {
+            background: #252545;
         }
 
         .t-levels h3 {
@@ -133,6 +265,11 @@
             margin-bottom: 15px;
             text-align: center;
             font-size: 1.3em;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .t-levels h3 {
+            color: #f0f0f0;
         }
 
         .t-level {
@@ -147,6 +284,11 @@
             position: relative;
         }
 
+        body.dark-mode .t-level {
+            background: #1e1e3a;
+            color: #f0f0f0;
+        }
+
         .t-level:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
@@ -157,6 +299,10 @@
             color: white;
             transform: scale(1.02);
             box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        body.dark-mode .t-level.active {
+            background: linear-gradient(135deg, #4a4a8a 0%, #5a3a7a 100%);
         }
 
         .arrow {
@@ -263,6 +409,11 @@
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .stats {
+            background: #252545;
         }
 
         .stats h3 {
@@ -270,6 +421,11 @@
             margin-bottom: 15px;
             text-align: center;
             font-size: 1.3em;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .stats h3 {
+            color: #f0f0f0;
         }
 
         .stat-item {
@@ -281,12 +437,23 @@
             background: white;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .stat-item {
+            background: #1e1e3a;
+            color: #f0f0f0;
         }
 
         .stat-label {
             font-weight: 600;
             color: #333;
             font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .stat-label {
+            color: #f0f0f0;
         }
 
         .stat-value {
@@ -328,6 +495,10 @@
             transition: all 0.3s ease;
         }
 
+        body.dark-mode .summary-card {
+            background: linear-gradient(135deg, #4a4a8a 0%, #5a3a7a 100%);
+        }
+
         .summary-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
@@ -356,6 +527,10 @@
             transition: all 0.3s ease;
         }
 
+        body.dark-mode .reset-btn {
+            background: linear-gradient(135deg, #d64545 0%, #c0392b 100%);
+        }
+
         .reset-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
@@ -375,7 +550,8 @@
             .t-level:hover,
             .stat-item:hover,
             .summary-card:hover,
-            .reset-btn:hover {
+            .reset-btn:hover,
+            .option-card:hover {
                 transform: none;
             }
         }
@@ -405,12 +581,22 @@
             border-radius: 15px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
             text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .currency-section {
+            background: #252545;
         }
 
         .currency-section h3 {
             color: #333;
             margin-bottom: 20px;
             font-size: 1.3em;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .currency-section h3 {
+            color: #f0f0f0;
         }
 
         .currency-selector {
@@ -432,6 +618,12 @@
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
         }
 
+        body.dark-mode .currency-btn {
+            background: #1e1e3a;
+            color: #f0f0f0;
+            border-color: #4a4a8a;
+        }
+
         .currency-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
@@ -444,6 +636,10 @@
             border-color: #667eea;
             transform: scale(1.02);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        body.dark-mode .currency-btn.active {
+            background: linear-gradient(135deg, #4a4a8a 0%, #5a3a7a 100%);
         }
 
         @media (max-width: 768px) {
@@ -468,25 +664,316 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* History section */
+        .history-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f9ff;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .history-section {
+            background: #252545;
+        }
+
+        .history-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .history-section h3 {
+            color: #f0f0f0;
+        }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .history-item {
+            background: #1e1e3a;
+            color: #f0f0f0;
+        }
+
+        .history-item.win {
+            border-left: 4px solid #11998e;
+        }
+
+        .history-item.loss {
+            border-left: 4px solid #fc466b;
+        }
+
+        .history-details {
+            flex: 1;
+        }
+
+        .history-amount {
+            font-weight: 700;
+            margin-left: 15px;
+        }
+
+        .history-win {
+            color: #11998e;
+        }
+
+        .history-loss {
+            color: #fc466b;
+        }
+
+        .history-date {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 3px;
+        }
+
+        body.dark-mode .history-date {
+            color: #aaa;
+        }
+
+        .history-time {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        body.dark-mode .history-time {
+            color: #aaa;
+        }
+
+        .history-empty {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+
+        body.dark-mode .history-empty {
+            color: #aaa;
+        }
+
+        /* Fullscreen history modal */
+        .history-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            display: none;
+        }
+
+        body.dark-mode .history-modal {
+            background: rgba(20, 20, 40, 0.95);
+        }
+
+        .history-modal.active {
+            transform: translateY(0);
+            display: block;
+        }
+
+        .history-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        body.dark-mode .history-modal-header {
+            border-bottom: 2px solid #4a4a8a;
+        }
+
+        .history-modal-header h3 {
+            color: #333;
+            font-size: 1.5em;
+        }
+
+        body.dark-mode .history-modal-header h3 {
+            color: #f0f0f0;
+        }
+
+        .close-history {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .close-history {
+            background: #4a4a8a;
+        }
+
+        .close-history:hover {
+            transform: scale(1.1);
+        }
+
+        .history-modal-list {
+            margin-top: 20px;
+        }
+
+        /* Import/Export section */
+        .data-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f9ff;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .data-section {
+            background: #252545;
+        }
+
+        .data-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .data-section h3 {
+            color: #f0f0f0;
+        }
+
+        .data-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .data-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .data-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        body.dark-mode .data-btn {
+            background: linear-gradient(135deg, #4a4a8a 0%, #5a3a7a 100%);
+        }
+
+        .data-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .data-textarea {
+            width: 100%;
+            height: 100px;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-family: inherit;
+            resize: none;
+        }
+
+        body.dark-mode .data-textarea {
+            background: #1e1e3a;
+            color: #f0f0f0;
+            border-color: #4a4a8a;
+        }
+
+        /* Single trade mode specific styles */
+        .single-trade .t-levels .t-level {
+            display: none;
+        }
+
+        .single-trade .t-levels .t-level[data-level="1"] {
+            display: flex;
+        }
+
+        /* Hide/show elements based on mode */
+        .six-trade-mode,
+        .single-trade-mode {
+            display: none;
+        }
+
+        .six-trade-mode.active,
+        .single-trade-mode.active {
+            display: block;
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="selection-screen">
         <div class="header">
-            <h1>💸 Para Yönetimi</h1>
-            <p>Martingale Stratejisi ile Zarar Yönetimi - 
-         
-                alperall tarafından geliştirildi 🧑‍💻</p>
+            <h1>💸 Trading Tracker</h1>
+            <p>Zarar Yönetimi Sistemi - Alperall tarafından geliştirildi 🧑‍💻</p>
+        </div>
+
+        <div class="selection-screen">
+            <div class="option-card" id="six-trade-option">
+                <h2>Six Trade Cycle</h2>
+                <p>T1'den T6'ya kadar zarar kapamalı Martingale stratejisi</p>
+            </div>
+            <div class="option-card" id="single-trade-option">
+                <h2>Single Trade Cycle</h2>
+                <p>Sadece T1 seviyesinde istatistiksel hesaplama</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container six-trade-mode" id="six-trade-container">
+        <div class="header">
+            <button class="back-btn" id="six-trade-back"><i class="fas fa-arrow-left"></i></button>
+            <h1>Para Yönetimi</h1>
+            <p>Martingale Stratejisi ile Zarar Yönetimi</p>
+            <button class="mode-toggle" id="six-trade-mode-toggle"><i class="fas fa-moon"></i></button>
         </div>
 
         <div class="inputs-section">
             <div class="input-group">
-                <h3>💰 T1 Trade Miktarı (<span id="currency-display">$</span>)</h3>
-                <input type="number" class="input-field" id="tradeAmount" value="100" min="1" step="1">
+                <h3>💰 T1 Trade Miktarı (<span id="six-currency-display">$</span>)</h3>
+                <input type="number" class="input-field" id="six-tradeAmount" value="100" min="1" step="1">
             </div>
             <div class="input-group">
                 <h3>📈 Karlılık Oranı (%)</h3>
-                <input type="number" class="input-field" id="profitRate" value="90" min="1" max="1000" step="1">
+                <input type="number" class="input-field" id="six-profitRate" value="90" min="1" max="1000" step="1">
             </div>
         </div>
 
@@ -496,43 +983,43 @@
                 <div class="t-level active" data-level="1">
                     <span class="arrow">▶</span>
                     <span class="t-name">T1</span>
-                    <span class="t-amount" id="t1-amount">$100</span>
+                    <span class="t-amount" id="six-t1-amount">$100</span>
                 </div>
                 <div class="t-level" data-level="2">
                     <span class="arrow">▶</span>
                     <span class="t-name">T2</span>
-                    <span class="t-amount" id="t2-amount">$190</span>
+                    <span class="t-amount" id="six-t2-amount">$190</span>
                 </div>
                 <div class="t-level" data-level="3">
                     <span class="arrow">▶</span>
                     <span class="t-name">T3</span>
-                    <span class="t-amount" id="t3-amount">$361</span>
+                    <span class="t-amount" id="six-t3-amount">$361</span>
                 </div>
                 <div class="t-level" data-level="4">
                     <span class="arrow">▶</span>
                     <span class="t-name">T4</span>
-                    <span class="t-amount" id="t4-amount">$686</span>
+                    <span class="t-amount" id="six-t4-amount">$686</span>
                 </div>
                 <div class="t-level" data-level="5">
                     <span class="arrow">▶</span>
                     <span class="t-name">T5</span>
-                    <span class="t-amount" id="t5-amount">$1,303</span>
+                    <span class="t-amount" id="six-t5-amount">$1,303</span>
                 </div>
                 <div class="t-level" data-level="6">
                     <span class="arrow">▶</span>
                     <span class="t-name">T6</span>
-                    <span class="t-amount" id="t6-amount">$2,476</span>
+                    <span class="t-amount" id="six-t6-amount">$2,476</span>
                 </div>
             </div>
 
             <div class="controls">
-                <button class="btn btn-win" onclick="handleWin()">
+                <button class="btn btn-win" id="six-win-btn">
                     ✅ WIN
                 </button>
-                <button class="btn btn-loss" onclick="handleLoss()">
+                <button class="btn btn-loss" id="six-loss-btn">
                     ❌ LOSS
                 </button>
-                <button class="reset-btn" onclick="resetAll()">
+                <button class="reset-btn" id="six-reset-btn">
                     🔄 Sıfırla
                 </button>
             </div>
@@ -541,23 +1028,23 @@
                 <h3>📈 İstatistikler</h3>
                 <div class="stat-item">
                     <span class="stat-label">Toplam Kar:</span>
-                    <span class="stat-value stat-profit" id="totalProfit">$0</span>
+                    <span class="stat-value stat-profit" id="six-totalProfit">$0</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-label">Toplam Zarar:</span>
-                    <span class="stat-value stat-loss" id="totalLoss">$0</span>
+                    <span class="stat-value stat-loss" id="six-totalLoss">$0</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-label">Net Kar:</span>
-                    <span class="stat-value" id="netProfit">$0</span>
+                    <span class="stat-value" id="six-netProfit">$0</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-label">Win Rate:</span>
-                    <span class="stat-value" id="winRate">0%</span>
+                    <span class="stat-value" id="six-winRate">0%</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-label">Sonraki Kar:</span>
-                    <span class="stat-value stat-profit" id="nextWinAmount">$90</span>
+                    <span class="stat-value stat-profit" id="six-nextWinAmount">$90</span>
                 </div>
             </div>
         </div>
@@ -565,20 +1052,28 @@
         <div class="summary">
             <div class="summary-card">
                 <h4>Mevcut Seviye</h4>
-                <div class="value" id="currentLevel">T1</div>
+                <div class="value" id="six-currentLevel">T1</div>
             </div>
             <div class="summary-card">
                 <h4>Toplam İşlem</h4>
-                <div class="value" id="totalTrades">0</div>
+                <div class="value" id="six-totalTrades">0</div>
             </div>
             <div class="summary-card">
                 <h4>Kazanılan</h4>
-                <div class="value" id="winTrades">0</div>
+                <div class="value" id="six-winTrades">0</div>
             </div>
             <div class="summary-card">
                 <h4>Kaybedilen</h4>
-                <div class="value" id="lossTrades">0</div>
+                <div class="value" id="six-lossTrades">0</div>
             </div>
+        </div>
+
+        <div class="history-section">
+            <h3>📜 İşlem Geçmişi <small>(Son 20 işlem)</small></h3>
+            <div class="history-list" id="six-history-list">
+                <div class="history-empty">Henüz işlem yapılmadı</div>
+            </div>
+            <button class="reset-btn" id="six-view-history-btn">Tüm Geçmişi Görüntüle</button>
         </div>
 
         <div class="currency-section">
@@ -592,237 +1087,984 @@
                 <button class="currency-btn" data-currency="¥" data-symbol="¥">💴 JPY (¥)</button>
             </div>
         </div>
+
+        <div class="data-section">
+            <h3>📁 Veri Yönetimi</h3>
+            <div class="data-buttons">
+                <button class="data-btn" id="six-export-btn"><i class="fas fa-file-export"></i> Verileri Dışa Aktar</button>
+                <button class="data-btn" id="six-import-btn"><i class="fas fa-file-import"></i> Verileri İçe Aktar</button>
+            </div>
+            <textarea class="data-textarea" id="six-data-textarea" placeholder="İçe aktarılacak verileri buraya yapıştırın..."></textarea>
+        </div>
+    </div>
+
+    <div class="container single-trade-mode" id="single-trade-container">
+        <div class="header">
+            <button class="back-btn" id="single-trade-back"><i class="fas fa-arrow-left"></i></button>
+            <h1>Para Yönetimi</h1>
+            <p>İstatistiksel Hesaplama</p>
+            <button class="mode-toggle" id="single-trade-mode-toggle"><i class="fas fa-moon"></i></button>
+        </div>
+
+        <div class="inputs-section">
+            <div class="input-group">
+                <h3>💰 T1 Trade Miktarı (<span id="single-currency-display">$</span>)</h3>
+                <input type="number" class="input-field" id="single-tradeAmount" value="100" min="1" step="1">
+            </div>
+            <div class="input-group">
+                <h3>📈 Karlılık Oranı (%)</h3>
+                <input type="number" class="input-field" id="single-profitRate" value="90" min="1" max="1000" step="1">
+            </div>
+        </div>
+
+        <div class="main-section">
+            <div class="t-levels">
+                <h3>📊 Trade Tutarı</h3>
+                <div class="t-level active" data-level="1">
+                    <span class="arrow">▶</span>
+                    <span class="t-name">T1</span>
+                    <span class="t-amount" id="single-t1-amount">$100</span>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-win" id="single-win-btn">
+                    ✅ WIN
+                </button>
+                <button class="btn btn-loss" id="single-loss-btn">
+                    ❌ LOSS
+                </button>
+                <button class="reset-btn" id="single-reset-btn">
+                    🔄 Sıfırla
+                </button>
+            </div>
+
+            <div class="stats">
+                <h3>📈 İstatistikler</h3>
+                <div class="stat-item">
+                    <span class="stat-label">Toplam Kar:</span>
+                    <span class="stat-value stat-profit" id="single-totalProfit">$0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Toplam Zarar:</span>
+                    <span class="stat-value stat-loss" id="single-totalLoss">$0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Net Kar:</span>
+                    <span class="stat-value" id="single-netProfit">$0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Win Rate:</span>
+                    <span class="stat-value" id="single-winRate">0%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Sonraki Kar:</span>
+                    <span class="stat-value stat-profit" id="single-nextWinAmount">$90</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary">
+            <div class="summary-card">
+                <h4>Mevcut Seviye</h4>
+                <div class="value" id="single-currentLevel">T1</div>
+            </div>
+            <div class="summary-card">
+                <h4>Toplam İşlem</h4>
+                <div class="value" id="single-totalTrades">0</div>
+            </div>
+            <div class="summary-card">
+                <h4>Kazanılan</h4>
+                <div class="value" id="single-winTrades">0</div>
+            </div>
+            <div class="summary-card">
+                <h4>Kaybedilen</h4>
+                <div class="value" id="single-lossTrades">0</div>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <h3>📜 İşlem Geçmişi <small>(Son 20 işlem)</small></h3>
+            <div class="history-list" id="single-history-list">
+                <div class="history-empty">Henüz işlem yapılmadı</div>
+            </div>
+            <button class="reset-btn" id="single-view-history-btn">Tüm Geçmişi Görüntüle</button>
+        </div>
+
+        <div class="currency-section">
+            <h3>💱 Para Birimi Seçimi</h3>
+            <div class="currency-selector">
+                <button class="currency-btn active" data-currency="$" data-symbol="$">💵 USD ($)</button>
+                <button class="currency-btn" data-currency="€" data-symbol="€">💶 EUR (€)</button>
+                <button class="currency-btn" data-currency="₺" data-symbol="₺">🇹🇷 TRY (₺)</button>
+                <button class="currency-btn" data-currency="₿" data-symbol="₿">₿ BTC (₿)</button>
+                <button class="currency-btn" data-currency="£" data-symbol="£">💷 GBP (£)</button>
+                <button class="currency-btn" data-currency="¥" data-symbol="¥">💴 JPY (¥)</button>
+            </div>
+        </div>
+
+        <div class="data-section">
+            <h3>📁 Veri Yönetimi</h3>
+            <div class="data-buttons">
+                <button class="data-btn" id="single-export-btn"><i class="fas fa-file-export"></i> Verileri Dışa Aktar</button>
+                <button class="data-btn" id="single-import-btn"><i class="fas fa-file-import"></i> Verileri İçe Aktar</button>
+            </div>
+            <textarea class="data-textarea" id="single-data-textarea" placeholder="İçe aktarılacak verileri buraya yapıştırın..."></textarea>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div class="history-modal" id="six-history-modal">
+        <div class="history-modal-header">
+            <h3>📜 Tüm İşlem Geçmişi</h3>
+            <button class="close-history" id="six-close-history"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="history-modal-list" id="six-history-modal-list">
+            <!-- History items will be added here -->
+        </div>
+    </div>
+
+    <div class="history-modal" id="single-history-modal">
+        <div class="history-modal-header">
+            <h3>📜 Tüm İşlem Geçmişi</h3>
+            <button class="close-history" id="single-close-history"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="history-modal-list" id="single-history-modal-list">
+            <!-- History items will be added here -->
+        </div>
     </div>
 
     <script>
-        let currentLevel = 1;
-        let totalProfit = 0;
-        let totalLoss = 0;
-        let winTrades = 0;
-        let lossTrades = 0;
-        let totalTrades = 0;
-        let accumulatedLoss = 0; // Birikmiş zarar
-        let currentCurrency = '$'; // Varsayılan para birimi
-        
-        function getTradeAmount() {
-            return parseFloat(document.getElementById('tradeAmount').value) || 100;
-        }
-        
-        function getProfitRate() {
-            return parseFloat(document.getElementById('profitRate').value) / 100 || 0.9;
-        }
-        
-        function formatCurrency(amount) {
-            // Sayıyı string'e çevir ve ondalık kısmını kaldır
-            const roundedAmount = Math.round(amount);
-            
-            // Büyük sayılar için formatla
-            if (roundedAmount >= 1000000) {
-                // Milyon ve üzeri
-                return `${currentCurrency}${(roundedAmount / 1000000).toFixed(1)}M`;
-            } else if (roundedAmount >= 1000) {
-                // Bin ve üzeri - normal formatlama
-                return `${currentCurrency}${roundedAmount.toLocaleString('en-US')}`;
-            } else {
-                // 1000'den küçük
-                return `${currentCurrency}${roundedAmount}`;
+        // Sound effects
+        const playSound = (type) => {
+            if (typeof Audio !== 'undefined') {
+                const audio = new Audio();
+                audio.src = type === 'win' ? 
+                    'data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU...' : 
+                    'data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU...';
+                audio.volume = 0.3;
+                audio.play().catch(e => console.log('Audio play failed:', e));
             }
-        }
-        
-        function calculateAmounts() {
-            const baseAmount = getTradeAmount();
-            const profitRate = getProfitRate();
-            
-            // T1 her zaman base miktar
-            let t1Amount = baseAmount;
-            document.getElementById('t1-amount').textContent = formatCurrency(t1Amount);
-            
-            // T2 ve sonrasında zarar kapama hesabı
-            let cumulativeLoss = 0;
-            
-            for (let i = 2; i <= 6; i++) {
-                // Önceki seviyeye kadar olan toplam zarar
-                if (i === 2) {
-                    cumulativeLoss = baseAmount;
+        };
+
+        // Six Trade Cycle Logic
+        const sixTradeApp = {
+            currentLevel: 1,
+            totalProfit: 0,
+            totalLoss: 0,
+            winTrades: 0,
+            lossTrades: 0,
+            totalTrades: 0,
+            accumulatedLoss: 0,
+            currentCurrency: '$',
+            history: [],
+            darkMode: false,
+
+            init() {
+                this.loadData();
+                this.bindEvents();
+                this.calculateAmounts();
+                this.updateActiveLevel();
+                this.updateStats();
+                this.updateHistoryList();
+                this.applyDarkMode();
+            },
+
+            bindEvents() {
+                document.getElementById('six-tradeAmount').addEventListener('input', () => this.calculateAmounts());
+                document.getElementById('six-profitRate').addEventListener('input', () => this.calculateAmounts());
+                document.getElementById('six-win-btn').addEventListener('click', () => this.handleWin());
+                document.getElementById('six-loss-btn').addEventListener('click', () => this.handleLoss());
+                document.getElementById('six-reset-btn').addEventListener('click', () => this.resetAll());
+                document.getElementById('six-view-history-btn').addEventListener('click', () => this.showFullHistory());
+                document.getElementById('six-close-history').addEventListener('click', () => this.hideFullHistory());
+                document.getElementById('six-export-btn').addEventListener('click', () => this.exportData());
+                document.getElementById('six-import-btn').addEventListener('click', () => this.importData());
+                document.getElementById('six-trade-back').addEventListener('click', () => this.goBack());
+                document.getElementById('six-trade-mode-toggle').addEventListener('click', () => this.toggleDarkMode());
+
+                // Currency buttons
+                document.querySelectorAll('#six-trade-container .currency-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const symbol = btn.getAttribute('data-symbol');
+                        this.changeCurrency(symbol);
+                    });
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (document.getElementById('six-trade-container').classList.contains('active')) {
+                        if (e.key.toLowerCase() === 'w') this.handleWin();
+                        else if (e.key.toLowerCase() === 'l') this.handleLoss();
+                    }
+                });
+            },
+
+            getTradeAmount() {
+                return parseFloat(document.getElementById('six-tradeAmount').value) || 100;
+            },
+
+            getProfitRate() {
+                return parseFloat(document.getElementById('six-profitRate').value) / 100 || 0.9;
+            },
+
+            formatCurrency(amount) {
+                const roundedAmount = Math.round(amount);
+                
+                if (roundedAmount >= 1000000) {
+                    return `${this.currentCurrency}${(roundedAmount / 1000000).toFixed(1)}M`;
+                } else if (roundedAmount >= 1000) {
+                    return `${this.currentCurrency}${roundedAmount.toLocaleString('en-US')}`;
                 } else {
-                    // Önceki seviyenin gerçek tutarını al
-                    cumulativeLoss += getNumericAmount(i - 1);
+                    return `${this.currentCurrency}${roundedAmount}`;
+                }
+            },
+
+            calculateAmounts() {
+                const baseAmount = this.getTradeAmount();
+                const profitRate = this.getProfitRate();
+                
+                let t1Amount = baseAmount;
+                document.getElementById('six-t1-amount').textContent = this.formatCurrency(t1Amount);
+                
+                let cumulativeLoss = 0;
+                
+                for (let i = 2; i <= 6; i++) {
+                    if (i === 2) {
+                        cumulativeLoss = baseAmount;
+                    } else {
+                        cumulativeLoss += this.getNumericAmount(i - 1);
+                    }
+                    
+                    let requiredAmount = (cumulativeLoss + (baseAmount * profitRate)) / profitRate;
+                    
+                    document.getElementById(`six-t${i}-amount`).textContent = this.formatCurrency(requiredAmount);
                 }
                 
-                // Bu seviyede kazanmak için gereken miktar: zarar + istenen kar
-                let requiredAmount = (cumulativeLoss + (baseAmount * profitRate)) / profitRate;
-                
-                document.getElementById(`t${i}-amount`).textContent = formatCurrency(requiredAmount);
-            }
-            
-            updateNextWinAmount();
-        }
-        
-        function getNumericAmount(level) {
-            const text = document.getElementById(`t${level}-amount`).textContent;
-            // M (milyon) formatını çözümle
-            if (text.includes('M')) {
-                const numPart = parseFloat(text.replace(/[^\d.]/g, ''));
-                return numPart * 1000000;
-            }
-            // Normal formatı çözümle
-            return parseFloat(text.replace(/[^\d]/g, ''));
-        }
-        
-        function getPreviousAmount(level) {
-            return getNumericAmount(level);
-        }
-        
-        function getCurrentAmount() {
-            return getPreviousAmount(currentLevel);
-        }
-        
-        function updateActiveLevel() {
-            document.querySelectorAll('.t-level').forEach(level => {
-                level.classList.remove('active');
-            });
-            
-            document.querySelector(`[data-level="${currentLevel}"]`).classList.add('active');
-            document.getElementById('currentLevel').textContent = `T${currentLevel}`;
-        }
-        
-        function updateNextWinAmount() {
-            const currentAmount = getCurrentAmount();
-            const profitRate = getProfitRate();
-            const nextWin = Math.round(currentAmount * profitRate);
-            document.getElementById('nextWinAmount').textContent = formatCurrency(nextWin);
-        }
-        
-        function updateStats() {
-            const netProfit = totalProfit - totalLoss;
-            const winRate = totalTrades > 0 ? (winTrades / totalTrades * 100).toFixed(1) : 0;
-            
-            document.getElementById('totalProfit').textContent = formatCurrency(totalProfit);
-            document.getElementById('totalLoss').textContent = formatCurrency(totalLoss);
-            document.getElementById('netProfit').textContent = formatCurrency(netProfit);
-            document.getElementById('netProfit').className = `stat-value ${netProfit >= 0 ? 'stat-profit' : 'stat-loss'}`;
-            document.getElementById('winRate').textContent = `${winRate}%`;
-            document.getElementById('totalTrades').textContent = totalTrades;
-            document.getElementById('winTrades').textContent = winTrades;
-            document.getElementById('lossTrades').textContent = lossTrades;
-        }
-        
-        function handleWin() {
-            const currentAmount = getCurrentAmount();
-            const profitRate = getProfitRate();
-            const profit = Math.round(currentAmount * profitRate);
-            
-            totalProfit += profit;
-            winTrades++;
-            totalTrades++;
-            accumulatedLoss = 0; // Zarar sıfırlandı
-            
-            // Kazanınca T1'e dön
-            currentLevel = 1;
-            
-            updateActiveLevel();
-            updateStats();
-            updateNextWinAmount();
-            
-            // Başarı efekti
-            const winBtn = document.querySelector('.btn-win');
-            winBtn.style.transform = 'scale(0.95)';
-            winBtn.style.background = 'linear-gradient(135deg, #00b894 0%, #00cec9 100%)';
-            setTimeout(() => {
-                winBtn.style.transform = '';
-                winBtn.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
-            }, 200);
-        }
-        
-        function handleLoss() {
-            const currentAmount = getCurrentAmount();
-            
-            totalLoss += currentAmount;
-            lossTrades++;
-            totalTrades++;
-            accumulatedLoss += currentAmount;
-            
-            // Kaybedince bir sonraki seviyeye geç (T6'dan sonra T6'da kal)
-            if (currentLevel < 6) {
-                currentLevel++;
-            }
-            
-            updateActiveLevel();
-            updateStats();
-            updateNextWinAmount();
-            
-            // Kayıp efekti
-            const lossBtn = document.querySelector('.btn-loss');
-            lossBtn.style.transform = 'scale(0.95)';
-            lossBtn.style.background = 'linear-gradient(135deg, #e17055 0%, #d63031 100%)';
-            setTimeout(() => {
-                lossBtn.style.transform = '';
-                lossBtn.style.background = 'linear-gradient(135deg, #fc466b 0%, #3f5efb 100%)';
-            }, 200);
-        }
-        
-        function resetAll() {
-            if (confirm('Tüm veriler sıfırlanacak. Emin misiniz?')) {
-                currentLevel = 1;
-                totalProfit = 0;
-                totalLoss = 0;
-                winTrades = 0;
-                lossTrades = 0;
-                totalTrades = 0;
-                accumulatedLoss = 0;
-                
-                updateActiveLevel();
-                updateStats();
-                calculateAmounts();
-            }
-        }
-        
-        // Para birimi değiştirme fonksiyonu
-        function changeCurrency(symbol) {
-            currentCurrency = symbol;
-            
-            // Aktif para birimi butonunu güncelle
-            document.querySelectorAll('.currency-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector(`[data-symbol="${symbol}"]`).classList.add('active');
-            
-            // Üstteki parantez içindeki para birimini güncelle
-            document.getElementById('currency-display').textContent = symbol;
-            
-            // Tüm tutarları güncelle
-            calculateAmounts();
-            updateStats();
-            updateNextWinAmount();
-        }
-        
-        // Para birimi butonları için event listener
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.currency-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const symbol = this.getAttribute('data-symbol');
-                    changeCurrency(symbol);
+                this.updateNextWinAmount();
+                this.saveData();
+            },
+
+            getNumericAmount(level) {
+                const text = document.getElementById(`six-t${level}-amount`).textContent;
+                if (text.includes('M')) {
+                    const numPart = parseFloat(text.replace(/[^\d.]/g, ''));
+                    return numPart * 1000000;
+                }
+                return parseFloat(text.replace(/[^\d]/g, ''));
+            },
+
+            updateActiveLevel() {
+                document.querySelectorAll('#six-trade-container .t-level').forEach(level => {
+                    level.classList.remove('active');
                 });
+                
+                document.querySelector(`#six-trade-container [data-level="${this.currentLevel}"]`).classList.add('active');
+                document.getElementById('six-currentLevel').textContent = `T${this.currentLevel}`;
+            },
+
+            updateNextWinAmount() {
+                const currentAmount = this.getNumericAmount(this.currentLevel);
+                const profitRate = this.getProfitRate();
+                const nextWin = Math.round(currentAmount * profitRate);
+                document.getElementById('six-nextWinAmount').textContent = this.formatCurrency(nextWin);
+            },
+
+            updateStats() {
+                const netProfit = this.totalProfit - this.totalLoss;
+                const winRate = this.totalTrades > 0 ? (this.winTrades / this.totalTrades * 100).toFixed(1) : 0;
+                
+                document.getElementById('six-totalProfit').textContent = this.formatCurrency(this.totalProfit);
+                document.getElementById('six-totalLoss').textContent = this.formatCurrency(this.totalLoss);
+                document.getElementById('six-netProfit').textContent = this.formatCurrency(netProfit);
+                document.getElementById('six-netProfit').className = `stat-value ${netProfit >= 0 ? 'stat-profit' : 'stat-loss'}`;
+                document.getElementById('six-winRate').textContent = `${winRate}%`;
+                document.getElementById('six-totalTrades').textContent = this.totalTrades;
+                document.getElementById('six-winTrades').textContent = this.winTrades;
+                document.getElementById('six-lossTrades').textContent = this.lossTrades;
+            },
+
+            addHistoryEntry(type, amount) {
+                const now = new Date();
+                const entry = {
+                    type,
+                    amount,
+                    date: now.toLocaleDateString(),
+                    time: now.toLocaleTimeString(),
+                    timestamp: now.getTime()
+                };
+                
+                this.history.unshift(entry);
+                
+                // Keep only the last 100 entries
+                if (this.history.length > 100) {
+                    this.history = this.history.slice(0, 100);
+                }
+                
+                this.updateHistoryList();
+                this.saveData();
+            },
+
+            updateHistoryList() {
+                const listContainer = document.getElementById('six-history-list');
+                const modalListContainer = document.getElementById('six-history-modal-list');
+                
+                if (this.history.length === 0) {
+                    listContainer.innerHTML = '<div class="history-empty">Henüz işlem yapılmadı</div>';
+                    modalListContainer.innerHTML = '<div class="history-empty">Henüz işlem yapılmadı</div>';
+                    return;
+                }
+                
+                // Update main history list (last 20)
+                const last20 = this.history.slice(0, 20);
+                listContainer.innerHTML = '';
+                last20.forEach(entry => {
+                    const item = document.createElement('div');
+                    item.className = `history-item ${entry.type}`;
+                    item.innerHTML = `
+                        <div class="history-details">
+                            <div>${entry.type === 'win' ? '✅ WIN' : '❌ LOSS'}</div>
+                            <div class="history-date">${entry.date} - ${entry.time}</div>
+                        </div>
+                        <div class="history-amount ${entry.type === 'win' ? 'history-win' : 'history-loss'}">
+                            ${entry.type === 'win' ? '+' : '-'}${this.formatCurrency(entry.amount)}
+                        </div>
+                    `;
+                    listContainer.appendChild(item);
+                });
+                
+                // Update modal history list (all)
+                modalListContainer.innerHTML = '';
+                this.history.forEach(entry => {
+                    const item = document.createElement('div');
+                    item.className = `history-item ${entry.type}`;
+                    item.innerHTML = `
+                        <div class="history-details">
+                            <div>${entry.type === 'win' ? '✅ WIN' : '❌ LOSS'}</div>
+                            <div class="history-date">${entry.date} - ${entry.time}</div>
+                        </div>
+                        <div class="history-amount ${entry.type === 'win' ? 'history-win' : 'history-loss'}">
+                            ${entry.type === 'win' ? '+' : '-'}${this.formatCurrency(entry.amount)}
+                        </div>
+                    `;
+                    modalListContainer.appendChild(item);
+                });
+            },
+
+            handleWin() {
+                playSound('win');
+                const currentAmount = this.getNumericAmount(this.currentLevel);
+                const profitRate = this.getProfitRate();
+                const profit = Math.round(currentAmount * profitRate);
+                
+                this.totalProfit += profit;
+                this.winTrades++;
+                this.totalTrades++;
+                this.accumulatedLoss = 0;
+                this.currentLevel = 1;
+                
+                this.addHistoryEntry('win', profit);
+                this.updateActiveLevel();
+                this.updateStats();
+                this.updateNextWinAmount();
+                
+                // Visual feedback
+                const winBtn = document.getElementById('six-win-btn');
+                winBtn.style.transform = 'scale(0.95)';
+                winBtn.style.background = 'linear-gradient(135deg, #00b894 0%, #00cec9 100%)';
+                setTimeout(() => {
+                    winBtn.style.transform = '';
+                    winBtn.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
+                }, 200);
+            },
+
+            handleLoss() {
+                playSound('loss');
+                const currentAmount = this.getNumericAmount(this.currentLevel);
+                
+                this.totalLoss += currentAmount;
+                this.lossTrades++;
+                this.totalTrades++;
+                this.accumulatedLoss += currentAmount;
+                
+                if (this.currentLevel < 6) {
+                    this.currentLevel++;
+                }
+                
+                this.addHistoryEntry('loss', currentAmount);
+                this.updateActiveLevel();
+                this.updateStats();
+                this.updateNextWinAmount();
+                
+                // Visual feedback
+                const lossBtn = document.getElementById('six-loss-btn');
+                lossBtn.style.transform = 'scale(0.95)';
+                lossBtn.style.background = 'linear-gradient(135deg, #e17055 0%, #d63031 100%)';
+                setTimeout(() => {
+                    lossBtn.style.transform = '';
+                    lossBtn.style.background = 'linear-gradient(135deg, #fc466b 0%, #3f5efb 100%)';
+                }, 200);
+            },
+
+            resetAll() {
+                if (confirm('Tüm veriler sıfırlanacak. Emin misiniz?')) {
+                    this.currentLevel = 1;
+                    this.totalProfit = 0;
+                    this.totalLoss = 0;
+                    this.winTrades = 0;
+                    this.lossTrades = 0;
+                    this.totalTrades = 0;
+                    this.accumulatedLoss = 0;
+                    this.history = [];
+                    
+                    this.updateActiveLevel();
+                    this.updateStats();
+                    this.calculateAmounts();
+                    this.updateHistoryList();
+                    this.saveData();
+                }
+            },
+
+            changeCurrency(symbol) {
+                this.currentCurrency = symbol;
+                
+                document.querySelectorAll('#six-trade-container .currency-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`#six-trade-container [data-symbol="${symbol}"]`).classList.add('active');
+                
+                document.getElementById('six-currency-display').textContent = symbol;
+                
+                this.calculateAmounts();
+                this.updateStats();
+                this.updateNextWinAmount();
+                this.updateHistoryList();
+                this.saveData();
+            },
+
+            showFullHistory() {
+                document.getElementById('six-history-modal').classList.add('active');
+            },
+
+            hideFullHistory() {
+                document.getElementById('six-history-modal').classList.remove('active');
+            },
+
+            exportData() {
+                const data = {
+                    currentLevel: this.currentLevel,
+                    totalProfit: this.totalProfit,
+                    totalLoss: this.totalLoss,
+                    winTrades: this.winTrades,
+                    lossTrades: this.lossTrades,
+                    totalTrades: this.totalTrades,
+                    accumulatedLoss: this.accumulatedLoss,
+                    currentCurrency: this.currentCurrency,
+                    tradeAmount: this.getTradeAmount(),
+                    profitRate: this.getProfitRate() * 100,
+                    history: this.history,
+                    darkMode: this.darkMode
+                };
+                
+                document.getElementById('six-data-textarea').value = JSON.stringify(data, null, 2);
+                document.getElementById('six-data-textarea').select();
+                document.execCommand('copy');
+                alert('Veriler panoya kopyalandı!');
+            },
+
+            importData() {
+                try {
+                    const data = JSON.parse(document.getElementById('six-data-textarea').value);
+                    
+                    if (confirm('Mevcut verilerin üzerine yazılacak. Emin misiniz?')) {
+                        this.currentLevel = data.currentLevel || 1;
+                        this.totalProfit = data.totalProfit || 0;
+                        this.totalLoss = data.totalLoss || 0;
+                        this.winTrades = data.winTrades || 0;
+                        this.lossTrades = data.lossTrades || 0;
+                        this.totalTrades = data.totalTrades || 0;
+                        this.accumulatedLoss = data.accumulatedLoss || 0;
+                        this.currentCurrency = data.currentCurrency || '$';
+                        this.history = data.history || [];
+                        this.darkMode = data.darkMode || false;
+                        
+                        document.getElementById('six-tradeAmount').value = data.tradeAmount || 100;
+                        document.getElementById('six-profitRate').value = data.profitRate || 90;
+                        
+                        this.changeCurrency(this.currentCurrency);
+                        this.applyDarkMode();
+                        this.calculateAmounts();
+                        this.updateActiveLevel();
+                        this.updateStats();
+                        this.updateHistoryList();
+                        
+                        alert('Veriler başarıyla yüklendi!');
+                    }
+                } catch (e) {
+                    alert('Geçersiz veri formatı!');
+                    console.error(e);
+                }
+            },
+
+            saveData() {
+                const data = {
+                    currentLevel: this.currentLevel,
+                    totalProfit: this.totalProfit,
+                    totalLoss: this.totalLoss,
+                    winTrades: this.winTrades,
+                    lossTrades: this.lossTrades,
+                    totalTrades: this.totalTrades,
+                    accumulatedLoss: this.accumulatedLoss,
+                    currentCurrency: this.currentCurrency,
+                    tradeAmount: this.getTradeAmount(),
+                    profitRate: this.getProfitRate() * 100,
+                    history: this.history,
+                    darkMode: this.darkMode
+                };
+                
+                localStorage.setItem('sixTradeData', JSON.stringify(data));
+            },
+
+            loadData() {
+                const savedData = localStorage.getItem('sixTradeData');
+                if (savedData) {
+                    try {
+                        const data = JSON.parse(savedData);
+                        
+                        this.currentLevel = data.currentLevel || 1;
+                        this.totalProfit = data.totalProfit || 0;
+                        this.totalLoss = data.totalLoss || 0;
+                        this.winTrades = data.winTrades || 0;
+                        this.lossTrades = data.lossTrades || 0;
+                        this.totalTrades = data.totalTrades || 0;
+                        this.accumulatedLoss = data.accumulatedLoss || 0;
+                        this.currentCurrency = data.currentCurrency || '$';
+                        this.history = data.history || [];
+                        this.darkMode = data.darkMode || false;
+                        
+                        document.getElementById('six-tradeAmount').value = data.tradeAmount || 100;
+                        document.getElementById('six-profitRate').value = data.profitRate || 90;
+                        
+                        this.changeCurrency(this.currentCurrency);
+                        this.applyDarkMode();
+                    } catch (e) {
+                        console.error('Failed to load saved data:', e);
+                    }
+                }
+            },
+
+            toggleDarkMode() {
+                this.darkMode = !this.darkMode;
+                this.applyDarkMode();
+                this.saveData();
+            },
+
+            applyDarkMode() {
+                if (this.darkMode) {
+                    document.body.classList.add('dark-mode');
+                    document.getElementById('six-trade-mode-toggle').innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    document.getElementById('six-trade-mode-toggle').innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            },
+
+            goBack() {
+                document.getElementById('selection-screen').style.display = 'block';
+                document.getElementById('six-trade-container').classList.remove('active');
+                document.body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                if (this.darkMode) {
+                    document.body.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
+                }
+            }
+        };
+
+        // Single Trade Cycle Logic
+        const singleTradeApp = {
+            totalProfit: 0,
+            totalLoss: 0,
+            winTrades: 0,
+            lossTrades: 0,
+            totalTrades: 0,
+            currentCurrency: '$',
+            history: [],
+            darkMode: false,
+
+            init() {
+                this.loadData();
+                this.bindEvents();
+                this.calculateAmounts();
+                this.updateStats();
+                this.updateHistoryList();
+                this.applyDarkMode();
+            },
+
+            bindEvents() {
+                document.getElementById('single-tradeAmount').addEventListener('input', () => this.calculateAmounts());
+                document.getElementById('single-profitRate').addEventListener('input', () => this.calculateAmounts());
+                document.getElementById('single-win-btn').addEventListener('click', () => this.handleWin());
+                document.getElementById('single-loss-btn').addEventListener('click', () => this.handleLoss());
+                document.getElementById('single-reset-btn').addEventListener('click', () => this.resetAll());
+                document.getElementById('single-view-history-btn').addEventListener('click', () => this.showFullHistory());
+                document.getElementById('single-close-history').addEventListener('click', () => this.hideFullHistory());
+                document.getElementById('single-export-btn').addEventListener('click', () => this.exportData());
+                document.getElementById('single-import-btn').addEventListener('click', () => this.importData());
+                document.getElementById('single-trade-back').addEventListener('click', () => this.goBack());
+                document.getElementById('single-trade-mode-toggle').addEventListener('click', () => this.toggleDarkMode());
+
+                // Currency buttons
+                document.querySelectorAll('#single-trade-container .currency-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const symbol = btn.getAttribute('data-symbol');
+                        this.changeCurrency(symbol);
+                    });
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (document.getElementById('single-trade-container').classList.contains('active')) {
+                        if (e.key.toLowerCase() === 'w') this.handleWin();
+                        else if (e.key.toLowerCase() === 'l') this.handleLoss();
+                    }
+                });
+            },
+
+            getTradeAmount() {
+                return parseFloat(document.getElementById('single-tradeAmount').value) || 100;
+            },
+
+            getProfitRate() {
+                return parseFloat(document.getElementById('single-profitRate').value) / 100 || 0.9;
+            },
+
+            formatCurrency(amount) {
+                const roundedAmount = Math.round(amount);
+                
+                if (roundedAmount >= 1000000) {
+                    return `${this.currentCurrency}${(roundedAmount / 1000000).toFixed(1)}M`;
+                } else if (roundedAmount >= 1000) {
+                    return `${this.currentCurrency}${roundedAmount.toLocaleString('en-US')}`;
+                } else {
+                    return `${this.currentCurrency}${roundedAmount}`;
+                }
+            },
+
+            calculateAmounts() {
+                const baseAmount = this.getTradeAmount();
+                document.getElementById('single-t1-amount').textContent = this.formatCurrency(baseAmount);
+                this.updateNextWinAmount();
+                this.saveData();
+            },
+
+            updateNextWinAmount() {
+                const currentAmount = this.getTradeAmount();
+                const profitRate = this.getProfitRate();
+                const nextWin = Math.round(currentAmount * profitRate);
+                document.getElementById('single-nextWinAmount').textContent = this.formatCurrency(nextWin);
+            },
+
+            updateStats() {
+                const netProfit = this.totalProfit - this.totalLoss;
+                const winRate = this.totalTrades > 0 ? (this.winTrades / this.totalTrades * 100).toFixed(1) : 0;
+                
+                document.getElementById('single-totalProfit').textContent = this.formatCurrency(this.totalProfit);
+                document.getElementById('single-totalLoss').textContent = this.formatCurrency(this.totalLoss);
+                document.getElementById('single-netProfit').textContent = this.formatCurrency(netProfit);
+                document.getElementById('single-netProfit').className = `stat-value ${netProfit >= 0 ? 'stat-profit' : 'stat-loss'}`;
+                document.getElementById('single-winRate').textContent = `${winRate}%`;
+                document.getElementById('single-totalTrades').textContent = this.totalTrades;
+                document.getElementById('single-winTrades').textContent = this.winTrades;
+                document.getElementById('single-lossTrades').textContent = this.lossTrades;
+            },
+
+            addHistoryEntry(type, amount) {
+                const now = new Date();
+                const entry = {
+                    type,
+                    amount,
+                    date: now.toLocaleDateString(),
+                    time: now.toLocaleTimeString(),
+                    timestamp: now.getTime()
+                };
+                
+                this.history.unshift(entry);
+                
+                if (this.history.length > 100) {
+                    this.history = this.history.slice(0, 100);
+                }
+                
+                this.updateHistoryList();
+                this.saveData();
+            },
+
+            updateHistoryList() {
+                const listContainer = document.getElementById('single-history-list');
+                const modalListContainer = document.getElementById('single-history-modal-list');
+                
+                if (this.history.length === 0) {
+                    listContainer.innerHTML = '<div class="history-empty">Henüz işlem yapılmadı</div>';
+                    modalListContainer.innerHTML = '<div class="history-empty">Henüz işlem yapılmadı</div>';
+                    return;
+                }
+                
+                // Update main history list (last 20)
+                const last20 = this.history.slice(0, 20);
+                listContainer.innerHTML = '';
+                last20.forEach(entry => {
+                    const item = document.createElement('div');
+                    item.className = `history-item ${entry.type}`;
+                    item.innerHTML = `
+                        <div class="history-details">
+                            <div>${entry.type === 'win' ? '✅ WIN' : '❌ LOSS'}</div>
+                            <div class="history-date">${entry.date} - ${entry.time}</div>
+                        </div>
+                        <div class="history-amount ${entry.type === 'win' ? 'history-win' : 'history-loss'}">
+                            ${entry.type === 'win' ? '+' : '-'}${this.formatCurrency(entry.amount)}
+                        </div>
+                    `;
+                    listContainer.appendChild(item);
+                });
+                
+                // Update modal history list (all)
+                modalListContainer.innerHTML = '';
+                this.history.forEach(entry => {
+                    const item = document.createElement('div');
+                    item.className = `history-item ${entry.type}`;
+                    item.innerHTML = `
+                        <div class="history-details">
+                            <div>${entry.type === 'win' ? '✅ WIN' : '❌ LOSS'}</div>
+                            <div class="history-date">${entry.date} - ${entry.time}</div>
+                        </div>
+                        <div class="history-amount ${entry.type === 'win' ? 'history-win' : 'history-loss'}">
+                            ${entry.type === 'win' ? '+' : '-'}${this.formatCurrency(entry.amount)}
+                        </div>
+                    `;
+                    modalListContainer.appendChild(item);
+                });
+            },
+
+            handleWin() {
+                playSound('win');
+                const currentAmount = this.getTradeAmount();
+                const profitRate = this.getProfitRate();
+                const profit = Math.round(currentAmount * profitRate);
+                
+                this.totalProfit += profit;
+                this.winTrades++;
+                this.totalTrades++;
+                
+                this.addHistoryEntry('win', profit);
+                this.updateStats();
+                this.updateNextWinAmount();
+                
+                // Visual feedback
+                const winBtn = document.getElementById('single-win-btn');
+                winBtn.style.transform = 'scale(0.95)';
+                winBtn.style.background = 'linear-gradient(135deg, #00b894 0%, #00cec9 100%)';
+                setTimeout(() => {
+                    winBtn.style.transform = '';
+                    winBtn.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
+                }, 200);
+            },
+
+            handleLoss() {
+                playSound('loss');
+                const currentAmount = this.getTradeAmount();
+                
+                this.totalLoss += currentAmount;
+                this.lossTrades++;
+                this.totalTrades++;
+                
+                this.addHistoryEntry('loss', currentAmount);
+                this.updateStats();
+                this.updateNextWinAmount();
+                
+                // Visual feedback
+                const lossBtn = document.getElementById('single-loss-btn');
+                lossBtn.style.transform = 'scale(0.95)';
+                lossBtn.style.background = 'linear-gradient(135deg, #e17055 0%, #d63031 100%)';
+                setTimeout(() => {
+                    lossBtn.style.transform = '';
+                    lossBtn.style.background = 'linear-gradient(135deg, #fc466b 0%, #3f5efb 100%)';
+                }, 200);
+            },
+
+            resetAll() {
+                if (confirm('Tüm veriler sıfırlanacak. Emin misiniz?')) {
+                    this.totalProfit = 0;
+                    this.totalLoss = 0;
+                    this.winTrades = 0;
+                    this.lossTrades = 0;
+                    this.totalTrades = 0;
+                    this.history = [];
+                    
+                    this.updateStats();
+                    this.calculateAmounts();
+                    this.updateHistoryList();
+                    this.saveData();
+                }
+            },
+
+            changeCurrency(symbol) {
+                this.currentCurrency = symbol;
+                
+                document.querySelectorAll('#single-trade-container .currency-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`#single-trade-container [data-symbol="${symbol}"]`).classList.add('active');
+                
+                document.getElementById('single-currency-display').textContent = symbol;
+                
+                this.calculateAmounts();
+                this.updateStats();
+                this.updateNextWinAmount();
+                this.updateHistoryList();
+                this.saveData();
+            },
+
+            showFullHistory() {
+                document.getElementById('single-history-modal').classList.add('active');
+            },
+
+            hideFullHistory() {
+                document.getElementById('single-history-modal').classList.remove('active');
+            },
+
+            exportData() {
+                const data = {
+                    totalProfit: this.totalProfit,
+                    totalLoss: this.totalLoss,
+                    winTrades: this.winTrades,
+                    lossTrades: this.lossTrades,
+                    totalTrades: this.totalTrades,
+                    currentCurrency: this.currentCurrency,
+                    tradeAmount: this.getTradeAmount(),
+                    profitRate: this.getProfitRate() * 100,
+                    history: this.history,
+                    darkMode: this.darkMode
+                };
+                
+                document.getElementById('single-data-textarea').value = JSON.stringify(data, null, 2);
+                document.getElementById('single-data-textarea').select();
+                document.execCommand('copy');
+                alert('Veriler panoya kopyalandı!');
+            },
+
+            importData() {
+                try {
+                    const data = JSON.parse(document.getElementById('single-data-textarea').value);
+                    
+                    if (confirm('Mevcut verilerin üzerine yazılacak. Emin misiniz?')) {
+                        this.totalProfit = data.totalProfit || 0;
+                        this.totalLoss = data.totalLoss || 0;
+                        this.winTrades = data.winTrades || 0;
+                        this.lossTrades = data.lossTrades || 0;
+                        this.totalTrades = data.totalTrades || 0;
+                        this.currentCurrency = data.currentCurrency || '$';
+                        this.history = data.history || [];
+                        this.darkMode = data.darkMode || false;
+                        
+                        document.getElementById('single-tradeAmount').value = data.tradeAmount || 100;
+                        document.getElementById('single-profitRate').value = data.profitRate || 90;
+                        
+                        this.changeCurrency(this.currentCurrency);
+                        this.applyDarkMode();
+                        this.calculateAmounts();
+                        this.updateStats();
+                        this.updateHistoryList();
+                        
+                        alert('Veriler başarıyla yüklendi!');
+                    }
+                } catch (e) {
+                    alert('Geçersiz veri formatı!');
+                    console.error(e);
+                }
+            },
+
+            saveData() {
+                const data = {
+                    totalProfit: this.totalProfit,
+                    totalLoss: this.totalLoss,
+                    winTrades: this.winTrades,
+                    lossTrades: this.lossTrades,
+                    totalTrades: this.totalTrades,
+                    currentCurrency: this.currentCurrency,
+                    tradeAmount: this.getTradeAmount(),
+                    profitRate: this.getProfitRate() * 100,
+                    history: this.history,
+                    darkMode: this.darkMode
+                };
+                
+                localStorage.setItem('singleTradeData', JSON.stringify(data));
+            },
+
+            loadData() {
+                const savedData = localStorage.getItem('singleTradeData');
+                if (savedData) {
+                    try {
+                        const data = JSON.parse(savedData);
+                        
+                        this.totalProfit = data.totalProfit || 0;
+                        this.totalLoss = data.totalLoss || 0;
+                        this.winTrades = data.winTrades || 0;
+                        this.lossTrades = data.lossTrades || 0;
+                        this.totalTrades = data.totalTrades || 0;
+                        this.currentCurrency = data.currentCurrency || '$';
+                        this.history = data.history || [];
+                        this.darkMode = data.darkMode || false;
+                        
+                        document.getElementById('single-tradeAmount').value = data.tradeAmount || 100;
+                        document.getElementById('single-profitRate').value = data.profitRate || 90;
+                        
+                        this.changeCurrency(this.currentCurrency);
+                        this.applyDarkMode();
+                    } catch (e) {
+                        console.error('Failed to load saved data:', e);
+                    }
+                }
+            },
+
+            toggleDarkMode() {
+                this.darkMode = !this.darkMode;
+                this.applyDarkMode();
+                this.saveData();
+            },
+
+            applyDarkMode() {
+                if (this.darkMode) {
+                    document.body.classList.add('dark-mode');
+                    document.getElementById('single-trade-mode-toggle').innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    document.getElementById('single-trade-mode-toggle').innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            },
+
+            goBack() {
+                document.getElementById('selection-screen').style.display = 'block';
+                document.getElementById('single-trade-container').classList.remove('active');
+                document.body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                if (this.darkMode) {
+                    document.body.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
+                }
+            }
+        };
+
+        // Initialize apps when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle mode selection
+            document.getElementById('six-trade-option').addEventListener('click', function() {
+                document.getElementById('selection-screen').style.display = 'none';
+                document.getElementById('six-trade-container').classList.add('active');
+                sixTradeApp.init();
+            });
+
+            document.getElementById('single-trade-option').addEventListener('click', function() {
+                document.getElementById('selection-screen').style.display = 'none';
+                document.getElementById('single-trade-container').classList.add('active');
+                singleTradeApp.init();
             });
         });
-        
-        // Klavye kısayolları
-        document.addEventListener('keydown', function(event) {
-            if (event.key.toLowerCase() === 'w') {
-                handleWin();
-            } else if (event.key.toLowerCase() === 'l') {
-                handleLoss();
-            }
-        });
-        
-        // Input değişikliklerini dinle
-        document.getElementById('tradeAmount').addEventListener('input', calculateAmounts);
-        document.getElementById('profitRate').addEventListener('input', calculateAmounts);
-        
-        // Başlangıç
-        calculateAmounts();
-        updateActiveLevel();
-        updateStats();
     </script>
 </body>
 </html>
