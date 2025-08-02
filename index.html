@@ -1,0 +1,1763 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --win-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --loss-gradient: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+            --reset-gradient: linear-gradient(135deg, #ff6b6b 0%, #ff4757 100%);
+            --bg-color: #f0f2f5;
+            --text-color: #333;
+            --card-bg: #fff;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dark-mode {
+            --bg-color: #1a1a2e;
+            --text-color: #e6e6e6;
+            --card-bg: #16213e;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--primary-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            transition: var(--transition);
+            overflow-x: hidden;
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: var(--transition);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .page.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
+            z-index: 2;
+        }
+
+        .page.exiting {
+            transform: translateX(-100%);
+        }
+
+        .nav-buttons {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .nav-btn {
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .dark-mode .nav-btn:hover {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Home Page Styles */
+        .home-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            gap: 30px;
+        }
+
+        .home-header {
+            margin-bottom: 40px;
+        }
+
+        .home-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .home-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .mode-toggle {
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .mode-toggle:hover {
+            transform: rotate(30deg);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .dark-mode .mode-toggle:hover {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .selection-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .selection-btn {
+            padding: 25px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.4rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .selection-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .dark-mode .selection-btn:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .selection-btn:active {
+            transform: scale(0.98);
+        }
+
+        .six-trade-btn {
+            background: var(--win-gradient);
+            color: white;
+        }
+
+        .single-trade-btn {
+            background: var(--loss-gradient);
+            color: white;
+        }
+
+        /* Trading Page Styles */
+        .trading-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            opacity: 0.8;
+        }
+
+        .trading-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        @media (min-width: 768px) {
+            .trading-container {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .trading-container {
+                grid-template-columns: 2fr 1fr 1fr;
+            }
+        }
+
+        .input-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e6ed;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: var(--transition);
+        }
+
+        .dark-mode .input-field {
+            border-color: #2d3748;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .levels-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .levels-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .level-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-radius: 12px;
+            background: var(--bg-color);
+            transition: var(--transition);
+        }
+
+        .dark-mode .level-item {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .level-item.active {
+            background: var(--primary-gradient);
+            color: white;
+            transform: scale(1.02);
+        }
+
+        .level-indicator {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .level-item.active .level-indicator {
+            opacity: 1;
+            animation: pulse 1.5s infinite;
+        }
+
+        .level-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+            min-width: 40px;
+        }
+
+        .level-amount {
+            margin-left: auto;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .controls-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .control-btn {
+            padding: 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: var(--shadow);
+        }
+
+        .control-btn:active {
+            transform: scale(0.98);
+        }
+
+        .win-btn {
+            background: var(--win-gradient);
+            color: white;
+        }
+
+        .loss-btn {
+            background: var(--loss-gradient);
+            color: white;
+        }
+
+        .reset-btn {
+            background: var(--reset-gradient);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .stats-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .dark-mode .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .profit {
+            color: #10ac84;
+        }
+
+        .loss {
+            color: #ee5a24;
+        }
+
+        .summary-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-top: 25px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .summary-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .summary-card {
+            text-align: center;
+            padding: 20px;
+            background: var(--primary-gradient);
+            border-radius: 12px;
+            color: white;
+        }
+
+        .summary-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .currency-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-top: 25px;
+        }
+
+        .currency-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .currency-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .currency-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .currency-btn {
+            padding: 15px;
+            border: 2px solid #e0e6ed;
+            border-radius: 12px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .dark-mode .currency-btn {
+            border-color: #2d3748;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .currency-btn:hover {
+            transform: translateY(-3px);
+            border-color: #667eea;
+        }
+
+        .currency-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .history-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-top: 25px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .history-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .history-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .history-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 15px;
+            border-bottom: 1px solid #e0e6ed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dark-mode .history-item {
+            border-bottom-color: #2d3748;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-type {
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .win-type {
+            background: rgba(16, 172, 132, 0.2);
+            color: #10ac84;
+        }
+
+        .loss-type {
+            background: rgba(238, 90, 36, 0.2);
+            color: #ee5a24;
+        }
+
+        .history-details {
+            text-align: right;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .history-amount {
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        /* History Modal */
+        .history-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .history-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .history-modal-content {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: var(--transition);
+        }
+
+        .history-modal.active .history-modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+        }
+
+        .modal-close-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: var(--text-color);
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .dark-mode .modal-close-btn {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .dark-mode .modal-close-btn:hover {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .modal-history-item {
+            padding: 20px;
+            border-radius: 12px;
+            background: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .dark-mode .modal-history-item {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-history-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-history-type {
+            font-weight: 700;
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+
+        .modal-history-bottom {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .modal-history-amount {
+            font-weight: 700;
+        }
+
+        /* Export/Import Section */
+        .export-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .export-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            background: #667eea;
+            color: white;
+        }
+
+        .import-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            background: #1dd1a1;
+            color: white;
+        }
+
+        .export-btn:hover, .import-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Touch-friendly adjustments */
+        @media (hover: none) and (pointer: coarse) {
+            .selection-btn:hover,
+            .control-btn:hover,
+            .currency-btn:hover,
+            .reset-btn:hover,
+            .history-btn:hover,
+            .nav-btn:hover,
+            .mode-toggle:hover {
+                transform: none;
+            }
+        }
+
+        /* Improved touch targets for mobile */
+        @media (max-width: 768px) {
+            .selection-btn {
+                padding: 20px;
+                font-size: 1.2rem;
+            }
+            
+            .control-btn {
+                padding: 18px;
+                font-size: 1.1rem;
+            }
+            
+            .nav-btn, .mode-toggle {
+                width: 45px;
+                height: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Home Page -->
+    <div class="page home-page active" id="homePage">
+        <div class="nav-buttons">
+            <div></div> <!-- Empty div for spacing -->
+            <button class="mode-toggle" id="modeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+        
+        <div class="home-header">
+            <h1>Trading Tracker</h1>
+            <p>Martingale stratejisi ile zarar yönetimi sistemi</p>
+        </div>
+        
+        <div class="selection-buttons">
+            <button class="selection-btn six-trade-btn" id="sixTradeBtn">
+                <i class="fas fa-layer-group"></i>
+                Six Trade Cycle
+            </button>
+            <button class="selection-btn single-trade-btn" id="singleTradeBtn">
+                <i class="fas fa-coins"></i>
+                Single Trade Cycle
+            </button>
+        </div>
+    </div>
+    
+    <!-- Six Trade Cycle Page -->
+    <div class="page trading-page" id="sixTradePage">
+        <div class="nav-buttons">
+            <button class="nav-btn" id="sixBackBtn">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <button class="mode-toggle" id="sixModeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+        
+        <div class="page-header">
+            <h1>Six Trade Cycle</h1>
+            <p>Martingale zarar kapama sistemi</p>
+        </div>
+        
+        <div class="trading-container">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="sixTradeAmount">T1 Trade Miktarı (<span id="sixCurrencyDisplay">$</span>)</label>
+                    <input type="number" class="input-field" id="sixTradeAmount" value="100" min="1" step="1">
+                </div>
+                <div class="input-group">
+                    <label for="sixProfitRate">Karlılık Oranı (%)</label>
+                    <input type="number" class="input-field" id="sixProfitRate" value="90" min="1" max="1000" step="1">
+                </div>
+            </div>
+            
+            <div class="levels-section">
+                <h2>T Seviyeleri</h2>
+                <div class="levels-grid">
+                    <div class="level-item active" data-level="1">
+                        <span class="level-indicator">▶</span>
+                        <span class="level-name">T1</span>
+                        <span class="level-amount" id="sixT1Amount">$100</span>
+                    </div>
+                    <div class="level-item" data-level="2">
+                        <span class="level-indicator">▶</span>
+                        <span class="level-name">T2</span>
+                        <span class="level-amount" id="sixT2Amount">$190</span>
+                    </div>
+                    <div class="level-item" data-level="3">
+                        <span class="level-indicator">▶</span>
+                        <span class="level-name">T3</span>
+                        <span class="level-amount" id="sixT3Amount">$361</span>
+                    </div>
+                    <div class="level-item" data-level="4">
+                        <span class="level-indicator">▶</span>
+                        <span class="level-name">T4</span>
+                        <span class="level-amount" id="sixT4Amount">$686</span>
+                    </div>
+                    <div class="level-item" data-level="5">
+                        <span class="level-indicator">▶</span>
+                        <span class="level-name">T5</span>
+                        <span class="level-amount" id="sixT5Amount">$1,303</span>
+                    </div>
+                    <div class="level-item" data-level="6">
+                        <span class="level-indicator">▶</span>
+                        <span class="level-name">T6</span>
+                        <span class="level-amount" id="sixT6Amount">$2,476</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls-section">
+                <button class="control-btn win-btn" id="sixWinBtn">
+                    <i class="fas fa-check-circle"></i>
+                    WIN
+                </button>
+                <button class="control-btn loss-btn" id="sixLossBtn">
+                    <i class="fas fa-times-circle"></i>
+                    LOSS
+                </button>
+                <button class="reset-btn" id="sixResetBtn">
+                    <i class="fas fa-redo"></i>
+                    Sıfırla
+                </button>
+            </div>
+        </div>
+        
+        <div class="stats-section">
+            <h2>İstatistikler</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Toplam Kar</div>
+                    <div class="stat-value profit" id="sixTotalProfit">$0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Toplam Zarar</div>
+                    <div class="stat-value loss" id="sixTotalLoss">$0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Net Kar</div>
+                    <div class="stat-value" id="sixNetProfit">$0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Win Rate</div>
+                    <div class="stat-value" id="sixWinRate">0%</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="summary-section">
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-label">Mevcut Seviye</div>
+                    <div class="summary-value" id="sixCurrentLevel">T1</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Toplam İşlem</div>
+                    <div class="summary-value" id="sixTotalTrades">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Kazanılan</div>
+                    <div class="summary-value" id="sixWinTrades">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Kaybedilen</div>
+                    <div class="summary-value" id="sixLossTrades">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="currency-section">
+            <h2>Para Birimi Seçimi</h2>
+            <div class="currency-grid">
+                <button class="currency-btn active" data-currency="USD" data-symbol="$">$ USD</button>
+                <button class="currency-btn" data-currency="EUR" data-symbol="€">€ EUR</button>
+                <button class="currency-btn" data-currency="TRY" data-symbol="₺">₺ TRY</button>
+                <button class="currency-btn" data-currency="BTC" data-symbol="₿">₿ BTC</button>
+                <button class="currency-btn" data-currency="GBP" data-symbol="£">£ GBP</button>
+                <button class="currency-btn" data-currency="JPY" data-symbol="¥">¥ JPY</button>
+            </div>
+        </div>
+        
+        <div class="history-section">
+            <div class="history-header">
+                <h2>İşlem Geçmişi</h2>
+                <button class="history-btn" id="sixHistoryBtn">
+                    <i class="fas fa-history"></i>
+                    Tümünü Gör
+                </button>
+            </div>
+            <div class="history-list" id="sixHistoryList">
+                <!-- History items will be added here dynamically -->
+            </div>
+        </div>
+        
+        <div class="export-section">
+            <button class="export-btn" id="sixExportBtn">
+                <i class="fas fa-file-export"></i>
+                Geçmişi Dışa Aktar (JSON)
+            </button>
+            <button class="import-btn" id="sixImportBtn">
+                <i class="fas fa-file-import"></i>
+                Geçmişi İçe Aktar (JSON)
+            </button>
+            <input type="file" id="sixFileInput" accept=".json" style="display: none;">
+        </div>
+    </div>
+    
+    <!-- Single Trade Cycle Page -->
+    <div class="page trading-page" id="singleTradePage">
+        <div class="nav-buttons">
+            <button class="nav-btn" id="singleBackBtn">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <button class="mode-toggle" id="singleModeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+        
+        <div class="page-header">
+            <h1>Single Trade Cycle</h1>
+            <p>Klasik trade sistemi</p>
+        </div>
+        
+        <div class="trading-container">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="singleTradeAmount">T1 Trade Miktarı (<span id="singleCurrencyDisplay">$</span>)</label>
+                    <input type="number" class="input-field" id="singleTradeAmount" value="100" min="1" step="1">
+                </div>
+                <div class="input-group">
+                    <label for="singleProfitRate">Karlılık Oranı (%)</label>
+                    <input type="number" class="input-field" id="singleProfitRate" value="90" min="1" max="1000" step="1">
+                </div>
+            </div>
+            
+            <div class="levels-section">
+                <h2>T Seviyesi</h2>
+                <div class="levels-grid">
+                    <div class="level-item active" data-level="1">
+                        <span class="level-indicator">▶</span>
+                        <span class="level-name">T1</span>
+                        <span class="level-amount" id="singleT1Amount">$100</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls-section">
+                <button class="control-btn win-btn" id="singleWinBtn">
+                    <i class="fas fa-check-circle"></i>
+                    WIN
+                </button>
+                <button class="control-btn loss-btn" id="singleLossBtn">
+                    <i class="fas fa-times-circle"></i>
+                    LOSS
+                </button>
+                <button class="reset-btn" id="singleResetBtn">
+                    <i class="fas fa-redo"></i>
+                    Sıfırla
+                </button>
+            </div>
+        </div>
+        
+        <div class="stats-section">
+            <h2>İstatistikler</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Toplam Kar</div>
+                    <div class="stat-value profit" id="singleTotalProfit">$0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Toplam Zarar</div>
+                    <div class="stat-value loss" id="singleTotalLoss">$0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Net Kar</div>
+                    <div class="stat-value" id="singleNetProfit">$0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Win Rate</div>
+                    <div class="stat-value" id="singleWinRate">0%</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="summary-section">
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-label">Mevcut Seviye</div>
+                    <div class="summary-value" id="singleCurrentLevel">T1</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Toplam İşlem</div>
+                    <div class="summary-value" id="singleTotalTrades">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Kazanılan</div>
+                    <div class="summary-value" id="singleWinTrades">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Kaybedilen</div>
+                    <div class="summary-value" id="singleLossTrades">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="currency-section">
+            <h2>Para Birimi Seçimi</h2>
+            <div class="currency-grid">
+                <button class="currency-btn active" data-currency="USD" data-symbol="$">$ USD</button>
+                <button class="currency-btn" data-currency="EUR" data-symbol="€">€ EUR</button>
+                <button class="currency-btn" data-currency="TRY" data-symbol="₺">₺ TRY</button>
+                <button class="currency-btn" data-currency="BTC" data-symbol="₿">₿ BTC</button>
+                <button class="currency-btn" data-currency="GBP" data-symbol="£">£ GBP</button>
+                <button class="currency-btn" data-currency="JPY" data-symbol="¥">¥ JPY</button>
+            </div>
+        </div>
+        
+        <div class="history-section">
+            <div class="history-header">
+                <h2>İşlem Geçmişi</h2>
+                <button class="history-btn" id="singleHistoryBtn">
+                    <i class="fas fa-history"></i>
+                    Tümünü Gör
+                </button>
+            </div>
+            <div class="history-list" id="singleHistoryList">
+                <!-- History items will be added here dynamically -->
+            </div>
+        </div>
+        
+        <div class="export-section">
+            <button class="export-btn" id="singleExportBtn">
+                <i class="fas fa-file-export"></i>
+                Geçmişi Dışa Aktar (JSON)
+            </button>
+            <button class="import-btn" id="singleImportBtn">
+                <i class="fas fa-file-import"></i>
+                Geçmişi İçe Aktar (JSON)
+            </button>
+            <input type="file" id="singleFileInput" accept=".json" style="display: none;">
+        </div>
+    </div>
+    
+    <!-- History Modal -->
+    <div class="history-modal" id="historyModal">
+        <div class="history-modal-content">
+            <div class="modal-header">
+                <h2>İşlem Geçmişi</h2>
+                <button class="modal-close-btn" id="modalCloseBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-history-list" id="modalHistoryList">
+                <!-- Modal history items will be added here dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Page Navigation
+        const homePage = document.getElementById('homePage');
+        const sixTradePage = document.getElementById('sixTradePage');
+        const singleTradePage = document.getElementById('singleTradePage');
+        const historyModal = document.getElementById('historyModal');
+        
+        // Mode Toggle
+        const modeToggle = document.getElementById('modeToggle');
+        const sixModeToggle = document.getElementById('sixModeToggle');
+        const singleModeToggle = document.getElementById('singleModeToggle');
+        
+        // Six Trade Elements
+        const sixTradeAmount = document.getElementById('sixTradeAmount');
+        const sixProfitRate = document.getElementById('sixProfitRate');
+        const sixWinBtn = document.getElementById('sixWinBtn');
+        const sixLossBtn = document.getElementById('sixLossBtn');
+        const sixResetBtn = document.getElementById('sixResetBtn');
+        const sixHistoryBtn = document.getElementById('sixHistoryBtn');
+        const sixExportBtn = document.getElementById('sixExportBtn');
+        const sixImportBtn = document.getElementById('sixImportBtn');
+        const sixFileInput = document.getElementById('sixFileInput');
+        
+        // Single Trade Elements
+        const singleTradeAmount = document.getElementById('singleTradeAmount');
+        const singleProfitRate = document.getElementById('singleProfitRate');
+        const singleWinBtn = document.getElementById('singleWinBtn');
+        const singleLossBtn = document.getElementById('singleLossBtn');
+        const singleResetBtn = document.getElementById('singleResetBtn');
+        const singleHistoryBtn = document.getElementById('singleHistoryBtn');
+        const singleExportBtn = document.getElementById('singleExportBtn');
+        const singleImportBtn = document.getElementById('singleImportBtn');
+        const singleFileInput = document.getElementById('singleFileInput');
+        
+        // Modal Close Button
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        
+        // Six Trade Data
+        let sixData = {
+            currentLevel: 1,
+            totalProfit: 0,
+            totalLoss: 0,
+            winTrades: 0,
+            lossTrades: 0,
+            totalTrades: 0,
+            accumulatedLoss: 0,
+            currency: '$',
+            history: []
+        };
+        
+        // Single Trade Data
+        let singleData = {
+            totalProfit: 0,
+            totalLoss: 0,
+            winTrades: 0,
+            lossTrades: 0,
+            totalTrades: 0,
+            currency: '$',
+            history: []
+        };
+        
+        // Page Transitions
+        function navigateToPage(newPage) {
+            const activePage = document.querySelector('.page.active');
+            if (activePage) {
+                activePage.classList.add('exiting');
+                setTimeout(() => {
+                    activePage.classList.remove('active', 'exiting');
+                    newPage.classList.add('active');
+                }, 300);
+            } else {
+                newPage.classList.add('active');
+            }
+        }
+        
+        // Mode Toggle Functions
+        function toggleMode() {
+            document.body.classList.toggle('dark-mode');
+            const icon = this.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+        
+        // Format Currency
+        function formatCurrency(amount, currency) {
+            const roundedAmount = Math.round(amount);
+            
+            if (roundedAmount >= 1000000) {
+                return `${currency}${(roundedAmount / 1000000).toFixed(1)}M`;
+            } else if (roundedAmount >= 1000) {
+                return `${currency}${roundedAmount.toLocaleString('en-US')}`;
+            } else {
+                return `${currency}${roundedAmount}`;
+            }
+        }
+        
+        // Get Numeric Amount
+        function getNumericAmount(amountText) {
+            if (amountText.includes('M')) {
+                const numPart = parseFloat(amountText.replace(/[^\d.]/g, ''));
+                return numPart * 1000000;
+            }
+            return parseFloat(amountText.replace(/[^\d]/g, ''));
+        }
+        
+        // Six Trade Functions
+        function calculateSixAmounts() {
+            const baseAmount = parseFloat(sixTradeAmount.value) || 100;
+            const profitRate = (parseFloat(sixProfitRate.value) || 90) / 100;
+            
+            document.getElementById('sixT1Amount').textContent = formatCurrency(baseAmount, sixData.currency);
+            
+            let cumulativeLoss = 0;
+            
+            for (let i = 2; i <= 6; i++) {
+                if (i === 2) {
+                    cumulativeLoss = baseAmount;
+                } else {
+                    const prevAmount = document.getElementById(`sixT${i-1}Amount`).textContent;
+                    cumulativeLoss += getNumericAmount(prevAmount);
+                }
+                
+                const requiredAmount = (cumulativeLoss + (baseAmount * profitRate)) / profitRate;
+                document.getElementById(`sixT${i}Amount`).textContent = formatCurrency(requiredAmount, sixData.currency);
+            }
+        }
+        
+        function getSixCurrentAmount() {
+            const amountText = document.getElementById(`sixT${sixData.currentLevel}Amount`).textContent;
+            return getNumericAmount(amountText);
+        }
+        
+        function updateSixActiveLevel() {
+            document.querySelectorAll('#sixTradePage .level-item').forEach(level => {
+                level.classList.remove('active');
+            });
+            
+            document.querySelector(`#sixTradePage .level-item[data-level="${sixData.currentLevel}"]`).classList.add('active');
+            document.getElementById('sixCurrentLevel').textContent = `T${sixData.currentLevel}`;
+        }
+        
+        function updateSixStats() {
+            const netProfit = sixData.totalProfit - sixData.totalLoss;
+            const winRate = sixData.totalTrades > 0 ? (sixData.winTrades / sixData.totalTrades * 100).toFixed(1) : 0;
+            
+            document.getElementById('sixTotalProfit').textContent = formatCurrency(sixData.totalProfit, sixData.currency);
+            document.getElementById('sixTotalLoss').textContent = formatCurrency(sixData.totalLoss, sixData.currency);
+            document.getElementById('sixNetProfit').textContent = formatCurrency(netProfit, sixData.currency);
+            
+            if (netProfit >= 0) {
+                document.getElementById('sixNetProfit').classList.add('profit');
+                document.getElementById('sixNetProfit').classList.remove('loss');
+            } else {
+                document.getElementById('sixNetProfit').classList.add('loss');
+                document.getElementById('sixNetProfit').classList.remove('profit');
+            }
+            
+            document.getElementById('sixWinRate').textContent = `${winRate}%`;
+            document.getElementById('sixTotalTrades').textContent = sixData.totalTrades;
+            document.getElementById('sixWinTrades').textContent = sixData.winTrades;
+            document.getElementById('sixLossTrades').textContent = sixData.lossTrades;
+        }
+        
+        function addSixHistoryItem(type, amount) {
+            const now = new Date();
+            const historyItem = {
+                type: type,
+                amount: amount,
+                date: now.toLocaleDateString('tr-TR'),
+                time: now.toLocaleTimeString('tr-TR', {hour: '2-digit', minute: '2-digit'})
+            };
+            
+            sixData.history.unshift(historyItem);
+            if (sixData.history.length > 50) sixData.history.pop();
+            
+            updateSixHistoryDisplay();
+        }
+        
+        function updateSixHistoryDisplay() {
+            const historyList = document.getElementById('sixHistoryList');
+            historyList.innerHTML = '';
+            
+            const recentItems = sixData.history.slice(0, 5);
+            
+            recentItems.forEach(item => {
+                const historyElement = document.createElement('div');
+                historyElement.className = 'history-item';
+                historyElement.innerHTML = `
+                    <span class="history-type ${item.type === 'WIN' ? 'win-type' : 'loss-type'}">${item.type}</span>
+                    <div class="history-details">
+                        <div>${item.date}</div>
+                        <div class="history-amount">${formatCurrency(item.amount, sixData.currency)}</div>
+                    </div>
+                `;
+                historyList.appendChild(historyElement);
+            });
+        }
+        
+        function handleSixWin() {
+            const currentAmount = getSixCurrentAmount();
+            const profitRate = (parseFloat(sixProfitRate.value) || 90) / 100;
+            const profit = Math.round(currentAmount * profitRate);
+            
+            sixData.totalProfit += profit;
+            sixData.winTrades++;
+            sixData.totalTrades++;
+            sixData.currentLevel = 1;
+            
+            updateSixActiveLevel();
+            updateSixStats();
+            addSixHistoryItem('WIN', profit);
+        }
+        
+        function handleSixLoss() {
+            const currentAmount = getSixCurrentAmount();
+            
+            sixData.totalLoss += currentAmount;
+            sixData.lossTrades++;
+            sixData.totalTrades++;
+            
+            if (sixData.currentLevel < 6) {
+                sixData.currentLevel++;
+            }
+            
+            updateSixActiveLevel();
+            updateSixStats();
+            addSixHistoryItem('LOSS', currentAmount);
+        }
+        
+        function resetSixData() {
+            if (confirm('Tüm veriler sıfırlanacak. Emin misiniz?')) {
+                sixData.currentLevel = 1;
+                sixData.totalProfit = 0;
+                sixData.totalLoss = 0;
+                sixData.winTrades = 0;
+                sixData.lossTrades = 0;
+                sixData.totalTrades = 0;
+                sixData.accumulatedLoss = 0;
+                sixData.history = [];
+                
+                updateSixActiveLevel();
+                updateSixStats();
+                calculateSixAmounts();
+                updateSixHistoryDisplay();
+            }
+        }
+        
+        function changeSixCurrency(symbol) {
+            sixData.currency = symbol;
+            
+            document.querySelectorAll('#sixTradePage .currency-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`#sixTradePage .currency-btn[data-symbol="${symbol}"]`).classList.add('active');
+            
+            document.getElementById('sixCurrencyDisplay').textContent = symbol;
+            
+            calculateSixAmounts();
+            updateSixStats();
+            updateSixHistoryDisplay();
+        }
+        
+        function exportSixData() {
+            const dataStr = JSON.stringify(sixData);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'six-trade-data.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+        
+        function importSixData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    sixData = importedData;
+                    
+                    // Update UI with imported data
+                    sixTradeAmount.value = sixData.history.length > 0 ? 
+                        sixData.history[0].baseAmount || 100 : 100;
+                    sixProfitRate.value = sixData.history.length > 0 ? 
+                        sixData.history[0].profitRate || 90 : 90;
+                    
+                    updateSixActiveLevel();
+                    updateSixStats();
+                    calculateSixAmounts();
+                    updateSixHistoryDisplay();
+                } catch (error) {
+                    alert('Geçersiz dosya formatı!');
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        // Single Trade Functions
+        function calculateSingleAmounts() {
+            const baseAmount = parseFloat(singleTradeAmount.value) || 100;
+            document.getElementById('singleT1Amount').textContent = formatCurrency(baseAmount, singleData.currency);
+        }
+        
+        function updateSingleStats() {
+            const netProfit = singleData.totalProfit - singleData.totalLoss;
+            const winRate = singleData.totalTrades > 0 ? (singleData.winTrades / singleData.totalTrades * 100).toFixed(1) : 0;
+            
+            document.getElementById('singleTotalProfit').textContent = formatCurrency(singleData.totalProfit, singleData.currency);
+            document.getElementById('singleTotalLoss').textContent = formatCurrency(singleData.totalLoss, singleData.currency);
+            document.getElementById('singleNetProfit').textContent = formatCurrency(netProfit, singleData.currency);
+            
+            if (netProfit >= 0) {
+                document.getElementById('singleNetProfit').classList.add('profit');
+                document.getElementById('singleNetProfit').classList.remove('loss');
+            } else {
+                document.getElementById('singleNetProfit').classList.add('loss');
+                document.getElementById('singleNetProfit').classList.remove('profit');
+            }
+            
+            document.getElementById('singleWinRate').textContent = `${winRate}%`;
+            document.getElementById('singleTotalTrades').textContent = singleData.totalTrades;
+            document.getElementById('singleWinTrades').textContent = singleData.winTrades;
+            document.getElementById('singleLossTrades').textContent = singleData.lossTrades;
+        }
+        
+        function addSingleHistoryItem(type, amount) {
+            const now = new Date();
+            const historyItem = {
+                type: type,
+                amount: amount,
+                date: now.toLocaleDateString('tr-TR'),
+                time: now.toLocaleTimeString('tr-TR', {hour: '2-digit', minute: '2-digit'})
+            };
+            
+            singleData.history.unshift(historyItem);
+            if (singleData.history.length > 50) singleData.history.pop();
+            
+            updateSingleHistoryDisplay();
+        }
+        
+        function updateSingleHistoryDisplay() {
+            const historyList = document.getElementById('singleHistoryList');
+            historyList.innerHTML = '';
+            
+            const recentItems = singleData.history.slice(0, 5);
+            
+            recentItems.forEach(item => {
+                const historyElement = document.createElement('div');
+                historyElement.className = 'history-item';
+                historyElement.innerHTML = `
+                    <span class="history-type ${item.type === 'WIN' ? 'win-type' : 'loss-type'}">${item.type}</span>
+                    <div class="history-details">
+                        <div>${item.date}</div>
+                        <div class="history-amount">${formatCurrency(item.amount, singleData.currency)}</div>
+                    </div>
+                `;
+                historyList.appendChild(historyElement);
+            });
+        }
+        
+        function handleSingleWin() {
+            const baseAmount = parseFloat(singleTradeAmount.value) || 100;
+            const profitRate = (parseFloat(singleProfitRate.value) || 90) / 100;
+            const profit = Math.round(baseAmount * profitRate);
+            
+            singleData.totalProfit += profit;
+            singleData.winTrades++;
+            singleData.totalTrades++;
+            
+            updateSingleStats();
+            addSingleHistoryItem('WIN', profit);
+        }
+        
+        function handleSingleLoss() {
+            const baseAmount = parseFloat(singleTradeAmount.value) || 100;
+            
+            singleData.totalLoss += baseAmount;
+            singleData.lossTrades++;
+            singleData.totalTrades++;
+            
+            updateSingleStats();
+            addSingleHistoryItem('LOSS', baseAmount);
+        }
+        
+        function resetSingleData() {
+            if (confirm('Tüm veriler sıfırlanacak. Emin misiniz?')) {
+                singleData.totalProfit = 0;
+                singleData.totalLoss = 0;
+                singleData.winTrades = 0;
+                singleData.lossTrades = 0;
+                singleData.totalTrades = 0;
+                singleData.history = [];
+                
+                updateSingleStats();
+                updateSingleHistoryDisplay();
+            }
+        }
+        
+        function changeSingleCurrency(symbol) {
+            singleData.currency = symbol;
+            
+            document.querySelectorAll('#singleTradePage .currency-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`#singleTradePage .currency-btn[data-symbol="${symbol}"]`).classList.add('active');
+            
+            document.getElementById('singleCurrencyDisplay').textContent = symbol;
+            
+            calculateSingleAmounts();
+            updateSingleStats();
+            updateSingleHistoryDisplay();
+        }
+        
+        function exportSingleData() {
+            const dataStr = JSON.stringify(singleData);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'single-trade-data.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+        
+        function importSingleData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    singleData = importedData;
+                    
+                    updateSingleStats();
+                    updateSingleHistoryDisplay();
+                } catch (error) {
+                    alert('Geçersiz dosya formatı!');
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        // Modal Functions
+        function showHistoryModal(pageType) {
+            const modalHistoryList = document.getElementById('modalHistoryList');
+            modalHistoryList.innerHTML = '';
+            
+            const historyData = pageType === 'six' ? sixData.history : singleData.history;
+            
+            historyData.forEach(item => {
+                const historyElement = document.createElement('div');
+                historyElement.className = 'modal-history-item';
+                historyElement.innerHTML = `
+                    <div class="modal-history-top">
+                        <span class="modal-history-type ${item.type === 'WIN' ? 'win-type' : 'loss-type'}">${item.type}</span>
+                        <span>${item.time}</span>
+                    </div>
+                    <div class="modal-history-bottom">
+                        <span>${item.date}</span>
+                        <span class="modal-history-amount">${formatCurrency(item.amount, pageType === 'six' ? sixData.currency : singleData.currency)}</span>
+                    </div>
+                `;
+                modalHistoryList.appendChild(historyElement);
+            });
+            
+            historyModal.classList.add('active');
+        }
+        
+        function closeHistoryModal() {
+            historyModal.classList.remove('active');
+        }
+        
+        // Event Listeners
+        document.getElementById('sixTradeBtn').addEventListener('click', () => {
+            navigateToPage(sixTradePage);
+        });
+        
+        document.getElementById('singleTradeBtn').addEventListener('click', () => {
+            navigateToPage(singleTradePage);
+        });
+        
+        document.getElementById('sixBackBtn').addEventListener('click', () => {
+            navigateToPage(homePage);
+        });
+        
+        document.getElementById('singleBackBtn').addEventListener('click', () => {
+            navigateToPage(homePage);
+        });
+        
+        modeToggle.addEventListener('click', toggleMode);
+        sixModeToggle.addEventListener('click', toggleMode);
+        singleModeToggle.addEventListener('click', toggleMode);
+        
+        sixWinBtn.addEventListener('click', handleSixWin);
+        sixLossBtn.addEventListener('click', handleSixLoss);
+        sixResetBtn.addEventListener('click', resetSixData);
+        sixHistoryBtn.addEventListener('click', () => showHistoryModal('six'));
+        sixExportBtn.addEventListener('click', exportSixData);
+        sixImportBtn.addEventListener('click', () => sixFileInput.click());
+        sixFileInput.addEventListener('change', importSixData);
+        
+        singleWinBtn.addEventListener('click', handleSingleWin);
+        singleLossBtn.addEventListener('click', handleSingleLoss);
+        singleResetBtn.addEventListener('click', resetSingleData);
+        singleHistoryBtn.addEventListener('click', () => showHistoryModal('single'));
+        singleExportBtn.addEventListener('click', exportSingleData);
+        singleImportBtn.addEventListener('click', () => singleFileInput.click());
+        singleFileInput.addEventListener('change', importSingleData);
+        
+        modalCloseBtn.addEventListener('click', closeHistoryModal);
+        
+        // Currency Selectors
+        document.querySelectorAll('#sixTradePage .currency-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const symbol = this.getAttribute('data-symbol');
+                changeSixCurrency(symbol);
+            });
+        });
+        
+        document.querySelectorAll('#singleTradePage .currency-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const symbol = this.getAttribute('data-symbol');
+                changeSingleCurrency(symbol);
+            });
+        });
+        
+        // Input Listeners
+        sixTradeAmount.addEventListener('input', calculateSixAmounts);
+        sixProfitRate.addEventListener('input', calculateSixAmounts);
+        
+        singleTradeAmount.addEventListener('input', calculateSingleAmounts);
+        singleProfitRate.addEventListener('input', calculateSingleAmounts);
+        
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', function(event) {
+            if (sixTradePage.classList.contains('active')) {
+                if (event.key.toLowerCase() === 'w') handleSixWin();
+                if (event.key.toLowerCase() === 'l') handleSixLoss();
+            }
+            
+            if (singleTradePage.classList.contains('active')) {
+                if (event.key.toLowerCase() === 'w') handleSingleWin();
+                if (event.key.toLowerCase() === 'l') handleSingleLoss();
+            }
+        });
+        
+        // Initialize
+        calculateSixAmounts();
+        updateSixActiveLevel();
+        updateSixStats();
+        updateSixHistoryDisplay();
+        
+        calculateSingleAmounts();
+        updateSingleStats();
+        updateSingleHistoryDisplay();
+    </script>
+</body>
+</html>
