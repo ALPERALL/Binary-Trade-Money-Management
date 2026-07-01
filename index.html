@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>TradeFlow — Pro Trading Tracker</title>
+<title>AlpTrade — Pro Trading Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -513,10 +513,10 @@ body::before {
 }
 .home-cards {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 20px;
   width: 100%;
-  max-width: 600px;
+  max-width: 760px;
   animation: fadeInUp 0.7s ease 0.15s both;
 }
 @media(max-width:480px) { .home-cards { grid-template-columns: 1fr; } }
@@ -541,9 +541,11 @@ body::before {
 }
 .mode-card.six::before { background: radial-gradient(circle at 50% 50%, var(--win-glow) 0%, transparent 70%); }
 .mode-card.single::before { background: radial-gradient(circle at 50% 50%, var(--loss-glow) 0%, transparent 70%); }
+.mode-card.stake::before { background: radial-gradient(circle at 50% 50%, rgba(245,166,35,0.25) 0%, transparent 70%); }
 .mode-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: var(--card-shadow-hover); border-color: var(--border-hover); }
 .mode-card.six:hover { border-color: var(--win); }
 .mode-card.single:hover { border-color: var(--loss); }
+.mode-card.stake:hover { border-color: var(--gold); }
 .mode-card:hover::before { opacity: 1; }
 .mode-card-icon {
   width: 56px; height: 56px;
@@ -556,6 +558,7 @@ body::before {
 }
 .mode-card.six .mode-card-icon { background: var(--win-bg); color: var(--win); box-shadow: 0 4px 20px var(--win-glow); }
 .mode-card.single .mode-card-icon { background: var(--loss-bg); color: var(--loss); box-shadow: 0 4px 20px var(--loss-glow); }
+.mode-card.stake .mode-card-icon { background: rgba(245,166,35,0.1); color: var(--gold); box-shadow: 0 4px 20px rgba(245,166,35,0.25); }
 .mode-card h2 {
   font-family: var(--font-display);
   font-size: 1.15rem;
@@ -578,6 +581,7 @@ body::before {
 }
 .mode-card.six .mode-card-arrow { background: var(--win-bg); color: var(--win); }
 .mode-card.single .mode-card-arrow { background: var(--loss-bg); color: var(--loss); }
+.mode-card.stake .mode-card-arrow { background: rgba(245,166,35,0.1); color: var(--gold); }
 .mode-card:hover .mode-card-arrow { transform: translateX(4px); }
 
 /* Theme Picker */
@@ -1339,6 +1343,43 @@ body::before {
 .counting { animation: countPop 0.3s cubic-bezier(0.16,1,0.3,1); }
 @keyframes countPop { 0%{transform:scale(1)} 50%{transform:scale(1.12)} 100%{transform:scale(1)} }
 
+/* ===== STAKE SYSTEM ===== */
+.risk-modes { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:12px; }
+.risk-pill {
+  background:var(--bg2); border:1px solid var(--border); color:var(--text-muted);
+  border-radius:10px; padding:9px 2px; font-family:var(--font-body); font-size:0.68rem; font-weight:700;
+  cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:2px; transition:all 0.2s;
+}
+.risk-pill span.p { font-family:var(--font-mono); font-size:0.8rem; font-weight:700; }
+.risk-pill.active { border-color:var(--gold); background:rgba(245,166,35,0.1); color:var(--gold); }
+.custom-risk-row { display:none; margin-bottom:14px; }
+.custom-risk-row.show { display:block; }
+.custom-risk-row input[type=range] { width:100%; accent-color:var(--gold); }
+.custom-risk-row .crr-val { font-family:var(--font-mono); font-size:0.78rem; color:var(--text-muted); text-align:center; margin-top:4px; }
+
+.balance-with-ring { display:flex; align-items:center; gap:16px; }
+.goal-ring-wrap { position:relative; width:84px; height:84px; flex-shrink:0; }
+.goal-ring-wrap svg { transform:rotate(-90deg); width:84px; height:84px; }
+.goal-ring-pct { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.goal-ring-pct .grp-num { font-family:var(--font-display); font-size:1rem; font-weight:800; }
+.goal-ring-pct .grp-lbl { font-size:0.6rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; }
+.balance-ring-info { flex:1; min-width:0; }
+
+.mg-box { margin-top:14px; padding-top:14px; border-top:1px solid var(--border); display:none; }
+.mg-box.show { display:block; }
+.mg-box .mg-note { font-size:0.78rem; color:var(--text-muted); line-height:1.5; margin-bottom:10px; }
+.mg-stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.mg-stat-box { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; }
+.mg-stat-box .l { font-size:0.65rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; }
+.mg-stat-box .v { font-family:var(--font-mono); font-size:1rem; font-weight:700; margin-top:2px; color:var(--text); }
+
+.stake-amt-display { padding:16px; background:var(--bg2); border:1px solid var(--border); border-radius:14px; text-align:center; margin-top:4px; }
+.stake-amt-display .lbl { font-size:0.68rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); }
+.stake-amt-display .amt { font-family:var(--font-display); font-size:1.8rem; font-weight:800; color:var(--gold); margin-top:4px; }
+.stake-amt-display.mg-active .amt { color:var(--loss); }
+.stake-amt-display .sub2 { font-size:0.72rem; color:var(--text-muted); margin-top:4px; }
+.stake-floor-warn { font-size:0.72rem; color:var(--loss); margin-top:8px; font-weight:600; }
+
 /* ===== RESPONSIVE ===== */
 @media(max-width:600px) {
   .controls-card { position: static; }
@@ -1419,7 +1460,7 @@ body::before {
   <div class="auth-wrapper">
     <div class="auth-logo">
       <div class="logo-icon"><i class="fas fa-chart-line"></i></div>
-      <h1>TradeFlow</h1>
+      <h1>AlpTrade</h1>
       <p>Profesyonel ticaret takip sistemi</p>
     </div>
     <div class="auth-card">
@@ -1461,7 +1502,7 @@ body::before {
 <!-- ===== HOME PAGE ===== -->
 <div class="page" id="homePage">
   <nav class="home-nav">
-    <div class="nav-logo"><i class="fas fa-chart-line" style="margin-right:8px;font-size:0.9em"></i>TradeFlow</div>
+    <div class="nav-logo"><i class="fas fa-chart-line" style="margin-right:8px;font-size:0.9em"></i>AlpTrade</div>
     <div class="nav-right">
       <button class="nav-icon-btn sound-btn" id="homeSoundBtn" onclick="toggleSound()" title="Ses"><i class="fas fa-volume-up"></i></button>
       <button class="nav-icon-btn" id="themeToggleBtn" onclick="toggleThemePicker()" title="Tema"><i class="fas fa-palette"></i></button>
@@ -1474,7 +1515,7 @@ body::before {
   <div class="home-hero">
     <div class="hero-badge"><span class="dot"></span>Aktif Sistem</div>
     <h1>Akıllı <span class="hero-gradient">Ticaret</span><br>Takip Sistemi</h1>
-    <p>Martingale stratejisi ile zararlarınızı kapatın, kazançlarınızı takip edin.</p>
+    <p>Martingale ve yüzdesel stake stratejileriyle risklerinizi yönetin, kazançlarınızı takip edin.</p>
   </div>
   <div class="home-cards">
     <div class="mode-card six" onclick="navigateTo('sixPage')">
@@ -1487,6 +1528,12 @@ body::before {
       <div class="mode-card-icon"><i class="fas fa-bolt"></i></div>
       <h2>Single Trade</h2>
       <p>Klasik tek seviyeli sistem</p>
+      <div class="mode-card-arrow"><i class="fas fa-arrow-right"></i></div>
+    </div>
+    <div class="mode-card stake" onclick="navigateTo('stakePage')">
+      <div class="mode-card-icon"><i class="fas fa-percent"></i></div>
+      <h2>Stake Sistemi</h2>
+      <p>Bakiyenin yüzdesine göre stake + martingale telafi</p>
       <div class="mode-card-arrow"><i class="fas fa-arrow-right"></i></div>
     </div>
   </div>
@@ -1657,6 +1704,125 @@ body::before {
   </div>
 </div>
 
+<!-- ===== STAKE SYSTEM PAGE ===== -->
+<div class="page" id="stakePage">
+  <nav class="trading-nav">
+    <button class="back-btn" onclick="navigateTo('homePage')"><i class="fas fa-chevron-left"></i></button>
+    <span class="trading-nav-title">Stake Sistemi</span>
+    <div class="trading-nav-right">
+      <button class="nav-icon-btn sound-btn" id="stakeSoundBtn" onclick="toggleSound()"><i class="fas fa-volume-up"></i></button>
+      <button class="nav-icon-btn" onclick="toggleThemePicker()"><i class="fas fa-palette"></i></button>
+    </div>
+  </nav>
+  <div class="trading-page-wrapper">
+    <div class="trading-layout">
+      <!-- Settings -->
+      <div class="card settings-card" style="animation:fadeInUp 0.4s ease both">
+        <div class="card-title">Risk Modu</div>
+        <div class="risk-modes" id="riskModes">
+          <button class="risk-pill" data-mode="cons" onclick="setRiskMode('cons',5)"><span>Konserv.</span><span class="p">%5</span></button>
+          <button class="risk-pill" data-mode="mod" onclick="setRiskMode('mod',8)"><span>Orta</span><span class="p">%8</span></button>
+          <button class="risk-pill active" data-mode="agr" onclick="setRiskMode('agr',12.5)"><span>Agresif</span><span class="p">%12,5</span></button>
+          <button class="risk-pill" data-mode="custom" onclick="setRiskMode('custom',null)"><span>Özel</span><span class="p" id="customPctLabel">%?</span></button>
+        </div>
+        <div class="custom-risk-row" id="customRiskRow">
+          <input type="range" id="customRiskSlider" min="1" max="30" step="0.5" value="12.5" oninput="onCustomRiskInput()">
+          <div class="crr-val"><span id="customRiskVal">12,5</span>% bakiye stake olur</div>
+        </div>
+
+        <label class="field-label">Hedef Bakiye (<span class="stake-cur-label">$</span>)</label>
+        <input class="field-input" id="stakeTarget" type="number" value="70000" min="1" oninput="onStakeSettingsChange()">
+
+        <label class="field-label">Kazanırsam (stake'in %)</label>
+        <input class="field-input" id="stakeWinPct" type="number" value="80" min="1" oninput="onStakeSettingsChange()">
+        <label class="field-label">Kaybedersem (stake'in %)</label>
+        <input class="field-input" id="stakeLossPct" type="number" value="100" min="1" oninput="onStakeSettingsChange()">
+
+        <div class="toggle-row">
+          <span class="toggle-label">Martingale (kazanca göre telafi)</span>
+          <div class="toggle-switch" id="stakeMartToggle" onclick="toggleStakeMartingale()"></div>
+        </div>
+        <div class="mg-box" id="mgBox">
+          <div class="mg-note">Kayıp sonrası gereken stake otomatik hesaplanır: <b>telafi edilecek toplam kayıp ÷ (kazanç % ÷ 100)</b>. Kazanınca seri sıfırlanır.</div>
+          <div class="mg-stats-grid">
+            <div class="mg-stat-box"><div class="l">Kademe</div><div class="v" id="mgStreakVal">0</div></div>
+            <div class="mg-stat-box"><div class="l">Telafi Edilecek</div><div class="v" id="mgLossSumVal">$0</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Balance / Goal -->
+      <div class="card" style="animation:fadeInUp 0.4s ease 0.08s both">
+        <div class="card-title">Bakiye & Hedef</div>
+        <div class="balance-with-ring">
+          <div class="goal-ring-wrap">
+            <svg viewBox="0 0 84 84">
+              <circle cx="42" cy="42" r="36" fill="none" stroke="var(--bg3)" stroke-width="7"/>
+              <circle id="stakeRingFg" cx="42" cy="42" r="36" fill="none" stroke="var(--gold)" stroke-width="7" stroke-linecap="round" stroke-dasharray="226.2" stroke-dashoffset="226.2"/>
+            </svg>
+            <div class="goal-ring-pct">
+              <div class="grp-num" id="stakeRingPctNum">0%</div>
+              <div class="grp-lbl">HEDEF</div>
+            </div>
+          </div>
+          <div class="balance-ring-info">
+            <div class="balance-big" id="stakeBalanceBig" style="font-size:1.7rem">$1,000</div>
+            <div class="balance-subtitle" id="stakeBalanceSub">$69,000 kaldı</div>
+          </div>
+        </div>
+        <label class="field-label" style="margin-top:18px">Bakiyeyi Ayarla (<span class="stake-cur-label">$</span>)</label>
+        <input class="field-input" id="stakeBalanceInput" type="number" value="1000" min="0" style="margin-bottom:8px">
+        <button class="reset-btn-small" onclick="applyStakeBalance()" style="border-color:var(--accent);color:var(--accent)"><i class="fas fa-check"></i> Bakiyeyi Uygula</button>
+
+        <div class="stake-amt-display" id="stakeAmtDisplay">
+          <div class="lbl" id="stakeAmtLbl">Bir Sonraki İşlem İçin Stake</div>
+          <div class="amt" id="stakeAmtVal">$125</div>
+          <div class="sub2" id="stakeAmtSub">$1,000 bakiyenin %12,5'i</div>
+          <div class="stake-floor-warn" id="stakeFloorWarn" style="display:none"></div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="card controls-card" style="animation:fadeInUp 0.4s ease 0.16s both">
+        <div class="card-title">İşlem</div>
+        <button class="win-btn" id="stakeWinBtn" onclick="handleStakeAction('win')"><i class="fas fa-check"></i> WIN</button>
+        <button class="loss-btn" id="stakeLossBtn" onclick="handleStakeAction('loss')"><i class="fas fa-times"></i> LOSS</button>
+        <button class="reset-btn-small" onclick="resetStakeData()"><i class="fas fa-rotate-left"></i> Sıfırla</button>
+        <div class="card-title" style="margin-top:20px">İstatistikler</div>
+        <div class="stats-grid">
+          <div class="stat-chip"><div class="stat-chip-label">Toplam Kar</div><div class="stat-chip-value win-color" id="stakeTotalProfit">$0</div></div>
+          <div class="stat-chip"><div class="stat-chip-label">Toplam Zarar</div><div class="stat-chip-value loss-color" id="stakeTotalLoss">$0</div></div>
+          <div class="stat-chip"><div class="stat-chip-label">Net Kar</div><div class="stat-chip-value" id="stakeNetProfit">$0</div></div>
+          <div class="stat-chip"><div class="stat-chip-label">Win Rate</div><div class="stat-chip-value" id="stakeWinRate">0%</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-chip"><div class="summary-chip-label">Hedefe Ulaşma</div><div class="summary-chip-value" id="stakeGoalPctDisp">0%</div></div>
+      <div class="summary-chip"><div class="summary-chip-label">Toplam</div><div class="summary-chip-value" id="stakeTotalTrades">0</div></div>
+      <div class="summary-chip"><div class="summary-chip-label">Kazanan</div><div class="summary-chip-value" style="color:var(--win)" id="stakeWinTrades">0</div></div>
+      <div class="summary-chip"><div class="summary-chip-label">Kaybeden</div><div class="summary-chip-value" style="color:var(--loss)" id="stakeLossTrades">0</div></div>
+    </div>
+
+    <div class="currency-pills" id="stakeCurrencyPills"></div>
+
+    <div class="history-section">
+      <div class="section-header">
+        <div class="section-title"><i class="fas fa-clock-rotate-left" style="margin-right:8px;opacity:0.5"></i>Son İşlemler</div>
+        <button class="see-all-btn" onclick="openHistoryModal('stake')">Tümünü Gör</button>
+      </div>
+      <div class="history-feed" id="stakeHistoryFeed"><div style="padding:32px;text-align:center;color:var(--text-muted);font-size:0.85rem">Henüz işlem yok</div></div>
+    </div>
+
+    <div class="actions-row">
+      <button class="action-btn" onclick="exportData('stake')"><i class="fas fa-download"></i> Dışa Aktar</button>
+      <button class="action-btn" onclick="document.getElementById('stakeImportFile').click()"><i class="fas fa-upload"></i> İçe Aktar</button>
+      <input type="file" id="stakeImportFile" accept=".json" style="display:none" onchange="importData(event,'stake')">
+    </div>
+  </div>
+</div>
+
 <script>
 // ===== STATE =====
 const CURRENCIES = [
@@ -1688,6 +1854,22 @@ let singleState = {
   history: [],
   balance: 1000,
   useBalance: false
+};
+
+let stakeState = {
+  balance: 1000,
+  target: 70000,
+  riskMode: 'agr',
+  riskPct: 12.5,
+  winPct: 80,
+  lossPct: 100,
+  currency: '$',
+  martingaleOn: false,
+  martingaleLossSum: 0,
+  martingaleStreak: 0,
+  profit: 0, loss: 0,
+  wins: 0, losses: 0, total: 0,
+  history: []
 };
 
 // ===== AUDIO =====
@@ -1774,7 +1956,9 @@ function initParticles() {
 }
 
 // ===== AUTH =====
-let users = JSON.parse(localStorage.getItem('tf_users') || '{"demo":{"password":"demo123","name":"Demo Trader"}}');
+// Not: kullanıcı/oturum verisi tarayıcı localStorage yerine bu ortamın
+// kalıcı depolama sistemi (window.storage) üzerinden saklanır.
+let users = { "demo": { "password": "demo123", "name": "Demo Trader" } };
 
 function switchAuthTab(tab) {
   document.getElementById('loginTab').classList.toggle('active', tab==='login');
@@ -1790,7 +1974,7 @@ function handleLogin() {
     loginSuccess(u, users[u].name);
   } else { showToast('Kullanıcı adı veya şifre hatalı', 'loss'); }
 }
-function handleRegister() {
+async function handleRegister() {
   const name = document.getElementById('regFullname').value.trim();
   const u = document.getElementById('regUsername').value.trim();
   const p = document.getElementById('regPassword').value;
@@ -1798,19 +1982,20 @@ function handleRegister() {
   if (users[u]) { showToast('Bu kullanıcı adı alınmış', 'loss'); return; }
   if (p.length < 6) { showToast('Şifre en az 6 karakter olmalı', 'loss'); return; }
   users[u] = { password: p, name: name };
-  localStorage.setItem('tf_users', JSON.stringify(users));
+  try { await window.storage.set('at_users', JSON.stringify(users), false); } catch(e) { console.error(e); }
   showToast('Hesap oluşturuldu! Giriş yapılıyor...', 'win');
   setTimeout(() => loginSuccess(u, name), 800);
 }
 function demoLogin() { loginSuccess('demo', users['demo']?.name || 'Demo Trader'); }
-function loginSuccess(username, name) {
+async function loginSuccess(username, name) {
   currentUser = { username, name };
   const initials = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
   document.getElementById('homeAvatar').textContent = initials;
   document.getElementById('homeUsername').textContent = name.split(' ')[0];
   document.getElementById('panelAvatar').textContent = initials;
   document.getElementById('panelUserName').textContent = name;
-  loadUserData(username);
+  try { await window.storage.set('at_lastUser', username, false); } catch(e) {}
+  await loadUserData(username);
   navigateTo('homePage');
   showToast(`Hoş geldin, ${name.split(' ')[0]}!`, 'win');
 }
@@ -1823,19 +2008,22 @@ function logout() {
 }
 
 // ===== USER DATA =====
-function saveUserData() {
+async function saveUserData() {
   if (!currentUser) return;
-  localStorage.setItem(`tf_data_${currentUser.username}`, JSON.stringify({ sixState, singleState }));
+  try {
+    await window.storage.set(`at_data_${currentUser.username}`, JSON.stringify({ sixState, singleState, stakeState }), false);
+  } catch(e) { console.error('Storage error', e); }
 }
-function loadUserData(username) {
-  const raw = localStorage.getItem(`tf_data_${username}`);
-  if (raw) {
-    try {
-      const d = JSON.parse(raw);
+async function loadUserData(username) {
+  try {
+    const res = await window.storage.get(`at_data_${username}`, false);
+    if (res && res.value) {
+      const d = JSON.parse(res.value);
       if (d.sixState) sixState = d.sixState;
       if (d.singleState) singleState = d.singleState;
-    } catch(e) {}
-  }
+      if (d.stakeState) stakeState = Object.assign(stakeState, d.stakeState);
+    }
+  } catch(e) { /* henüz veri yok */ }
   renderSixLevels();
   updateSixStats();
   renderSixHistory();
@@ -1844,6 +2032,10 @@ function loadUserData(username) {
   updateSingleStats();
   renderSingleHistory();
   updateSingleBalanceDisplay();
+  hydrateStakeUI();
+  updateStakeStats();
+  renderStakeHistory();
+  updateStakeBalanceDisplay();
 }
 
 // ===== NAVIGATION =====
@@ -1864,9 +2056,9 @@ function navigateTo(pageId) {
 }
 
 // ===== THEME =====
-function setTheme(theme, label) {
+async function setTheme(theme, label) {
   document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('tf_theme', theme);
+  try { await window.storage.set('at_theme', theme, false); } catch(e) {}
   document.querySelectorAll('.theme-option').forEach(o => o.classList.toggle('active', o.dataset.theme === theme));
   closePicker();
   showToast(`${label} tema`, 'info');
@@ -1931,7 +2123,6 @@ function renderSixLevels() {
 function recalcSix() {
   sixState.customAmounts = null;
   renderSixLevels();
-  recalcSingle();
 }
 
 function getSixCurrentAmount() {
@@ -1995,6 +2186,7 @@ function resetSixData() {
   updateSixStats();
   renderSixHistory();
   updateSixBalanceDisplay();
+  saveUserData();
   showToast('Veriler sıfırlandı', 'info');
 }
 
@@ -2155,6 +2347,198 @@ function changeSingleCurrency(sym) {
   updateSingleBalanceDisplay();
 }
 
+// ===== STAKE SYSTEM =====
+function setRiskMode(mode, pct) {
+  stakeState.riskMode = mode;
+  document.querySelectorAll('#riskModes .risk-pill').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+  document.getElementById('customRiskRow').classList.toggle('show', mode === 'custom');
+  if (mode === 'custom') {
+    stakeState.riskPct = parseFloat(document.getElementById('customRiskSlider').value);
+  } else {
+    stakeState.riskPct = pct;
+  }
+  updateStakeBalanceDisplay();
+  saveUserData();
+}
+function onCustomRiskInput() {
+  const v = parseFloat(document.getElementById('customRiskSlider').value);
+  document.getElementById('customRiskVal').textContent = String(v).replace('.', ',');
+  document.getElementById('customPctLabel').textContent = '%' + String(v).replace('.', ',');
+  if (stakeState.riskMode === 'custom') {
+    stakeState.riskPct = v;
+    updateStakeBalanceDisplay();
+    saveUserData();
+  }
+}
+function onStakeSettingsChange() {
+  stakeState.target = parseFloat(document.getElementById('stakeTarget').value) || 1;
+  stakeState.winPct = parseFloat(document.getElementById('stakeWinPct').value) || 1;
+  stakeState.lossPct = parseFloat(document.getElementById('stakeLossPct').value) || 1;
+  updateStakeBalanceDisplay();
+  saveUserData();
+}
+function applyStakeBalance() {
+  const v = parseFloat(document.getElementById('stakeBalanceInput').value);
+  if (!isNaN(v) && v >= 0) {
+    stakeState.balance = v;
+    stakeState.history = [];
+    stakeState.profit = 0; stakeState.loss = 0;
+    stakeState.wins = 0; stakeState.losses = 0; stakeState.total = 0;
+    stakeState.martingaleLossSum = 0; stakeState.martingaleStreak = 0;
+    updateStakeStats();
+    renderStakeHistory();
+    updateStakeBalanceDisplay();
+    saveUserData();
+    showToast('Bakiye güncellendi', 'info');
+  }
+}
+function toggleStakeMartingale() {
+  stakeState.martingaleOn = !stakeState.martingaleOn;
+  document.getElementById('stakeMartToggle').classList.toggle('on', stakeState.martingaleOn);
+  document.getElementById('mgBox').classList.toggle('show', stakeState.martingaleOn);
+  stakeState.martingaleLossSum = 0;
+  stakeState.martingaleStreak = 0;
+  updateStakeBalanceDisplay();
+  saveUserData();
+}
+function getStakeCalc() {
+  if (stakeState.martingaleOn && stakeState.martingaleLossSum > 0) {
+    const winFrac = (stakeState.winPct/100) || 0.0001;
+    const needed = stakeState.martingaleLossSum / winFrac;
+    let stake = Math.max(1, Math.round(needed));
+    let capped = false;
+    if (stake > stakeState.balance) { stake = Math.max(1, Math.round(stakeState.balance)); capped = true; }
+    return { stake, mode: 'martingale', capped };
+  }
+  let raw = stakeState.balance * (stakeState.riskPct/100);
+  let stake = Math.max(1, Math.round(raw));
+  if (stake > stakeState.balance) stake = Math.max(1, Math.round(stakeState.balance));
+  return { stake, mode: 'normal', capped: false };
+}
+function updateStakeBalanceDisplay() {
+  const cur = stakeState.currency;
+  document.getElementById('stakeBalanceBig').textContent = fmt(stakeState.balance, cur);
+  const remaining = Math.max(stakeState.target - stakeState.balance, 0);
+  document.getElementById('stakeBalanceSub').textContent = remaining > 0 ? `${fmt(remaining, cur)} kaldı` : 'Hedefe ulaşıldı 🎉';
+  const pct = stakeState.target > 0 ? Math.min(stakeState.balance / stakeState.target, 1) : 0;
+  const circumference = 226.2;
+  document.getElementById('stakeRingFg').style.strokeDashoffset = circumference - circumference*pct;
+  document.getElementById('stakeRingPctNum').textContent = Math.round(pct*100) + '%';
+  document.getElementById('stakeGoalPctDisp').textContent = Math.round(pct*100) + '%';
+
+  const { stake, mode, capped } = getStakeCalc();
+  const box = document.getElementById('stakeAmtDisplay');
+  box.classList.toggle('mg-active', mode === 'martingale');
+  document.getElementById('stakeAmtVal').textContent = fmt(stake, cur);
+  if (mode === 'martingale') {
+    document.getElementById('stakeAmtLbl').textContent = "Martingale Telafi Stake'i";
+    document.getElementById('stakeAmtSub').textContent = `${fmt(stakeState.martingaleLossSum, cur)} kaybı %${stakeState.winPct} kazançla karşılamak için`;
+  } else {
+    document.getElementById('stakeAmtLbl').textContent = 'Bir Sonraki İşlem İçin Stake';
+    document.getElementById('stakeAmtSub').textContent = `${fmt(stakeState.balance, cur)} bakiyenin %${String(stakeState.riskPct).replace('.',',')}'i`;
+  }
+  const warn = document.getElementById('stakeFloorWarn');
+  if (mode === 'martingale' && capped) {
+    warn.style.display = 'block';
+    warn.textContent = 'Bakiye tam telafi için yetersiz — tüm bakiye kullanılacak';
+  } else {
+    warn.style.display = 'none';
+  }
+  document.getElementById('stakeWinBtn').disabled = stakeState.balance < 1;
+  document.getElementById('stakeLossBtn').disabled = stakeState.balance < 1;
+  document.getElementById('mgStreakVal').textContent = stakeState.martingaleStreak;
+  document.getElementById('mgLossSumVal').textContent = fmt(stakeState.martingaleLossSum, cur);
+}
+function handleStakeAction(type) {
+  const { stake, mode } = getStakeCalc();
+  if (stake <= 0 || stakeState.balance <= 0) return;
+  addRipple(type === 'win' ? document.getElementById('stakeWinBtn') : document.getElementById('stakeLossBtn'));
+  flashScreen(type);
+  if (type === 'win') {
+    playWinSound();
+    const profit = Math.round(stake * (stakeState.winPct/100));
+    stakeState.balance += profit;
+    stakeState.profit += profit;
+    stakeState.wins++; stakeState.total++;
+    if (stakeState.martingaleOn) { stakeState.martingaleLossSum = 0; stakeState.martingaleStreak = 0; }
+    stakeState.history.unshift({ type:'WIN', amount:profit, date:now(), mg: mode==='martingale' });
+    showToast(`+${fmt(profit, stakeState.currency)} Kazandınız!`, 'win');
+  } else {
+    playLossSound();
+    const lossAmt = Math.round(stake * (stakeState.lossPct/100));
+    stakeState.balance = Math.max(stakeState.balance - lossAmt, 0);
+    stakeState.loss += lossAmt;
+    stakeState.losses++; stakeState.total++;
+    if (stakeState.martingaleOn) { stakeState.martingaleLossSum += lossAmt; stakeState.martingaleStreak++; }
+    stakeState.history.unshift({ type:'LOSS', amount:lossAmt, date:now(), mg: mode==='martingale' });
+    showToast(`-${fmt(lossAmt, stakeState.currency)} Kaybedildi`, 'loss');
+  }
+  if (stakeState.history.length > 100) stakeState.history.pop();
+  updateStakeStats();
+  renderStakeHistory();
+  updateStakeBalanceDisplay();
+  saveUserData();
+}
+function updateStakeStats() {
+  const net = stakeState.profit - stakeState.loss;
+  const wr = stakeState.total > 0 ? (stakeState.wins/stakeState.total*100).toFixed(1) : 0;
+  setText('stakeTotalProfit', fmt(stakeState.profit, stakeState.currency), 'win-color');
+  setText('stakeTotalLoss', fmt(stakeState.loss, stakeState.currency), 'loss-color');
+  const netEl = document.getElementById('stakeNetProfit');
+  if (netEl) { netEl.textContent = fmt(net, stakeState.currency); netEl.className = 'stat-chip-value ' + (net>=0?'win-color':'loss-color'); }
+  setText('stakeWinRate', `${wr}%`);
+  setText('stakeTotalTrades', stakeState.total);
+  setText('stakeWinTrades', stakeState.wins);
+  setText('stakeLossTrades', stakeState.losses);
+}
+function renderStakeHistory() {
+  const feed = document.getElementById('stakeHistoryFeed');
+  const items = stakeState.history.slice(0, 8);
+  if (!items.length) { feed.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);font-size:0.85rem">Henüz işlem yok</div>'; return; }
+  feed.innerHTML = items.map((h,i) => `
+    <div class="history-entry" style="animation-delay:${i*0.05}s">
+      <span class="history-badge ${h.type==='WIN'?'win':'loss'}">${h.type}${h.mg?' MG':''}</span>
+      <span class="history-time">${h.date}</span>
+      <span class="history-amt">${h.type==='WIN'?'+':'-'}${fmt(h.amount, stakeState.currency)}</span>
+    </div>
+  `).join('');
+}
+function resetStakeData() {
+  if (!confirm('Tüm stake verileri sıfırlanacak. Emin misiniz?')) return;
+  const cur = stakeState.currency;
+  stakeState = { balance:1000, target:70000, riskMode:'agr', riskPct:12.5, winPct:80, lossPct:100, currency:cur, martingaleOn:false, martingaleLossSum:0, martingaleStreak:0, profit:0, loss:0, wins:0, losses:0, total:0, history:[] };
+  hydrateStakeUI();
+  updateStakeStats();
+  renderStakeHistory();
+  updateStakeBalanceDisplay();
+  saveUserData();
+  showToast('Stake verileri sıfırlandı', 'info');
+}
+function changeStakeCurrency(sym) {
+  stakeState.currency = sym;
+  renderCurrencyPills('stakeCurrencyPills', sym, changeStakeCurrency);
+  document.querySelectorAll('.stake-cur-label').forEach(e => e.textContent = sym);
+  updateStakeStats();
+  renderStakeHistory();
+  updateStakeBalanceDisplay();
+  saveUserData();
+}
+function hydrateStakeUI() {
+  document.getElementById('stakeBalanceInput').value = Math.round(stakeState.balance);
+  document.getElementById('stakeTarget').value = Math.round(stakeState.target);
+  document.getElementById('stakeWinPct').value = stakeState.winPct;
+  document.getElementById('stakeLossPct').value = stakeState.lossPct;
+  document.getElementById('customRiskSlider').value = stakeState.riskPct;
+  document.getElementById('customRiskVal').textContent = String(stakeState.riskPct).replace('.',',');
+  document.getElementById('customPctLabel').textContent = '%' + String(stakeState.riskPct).replace('.',',');
+  document.querySelectorAll('#riskModes .risk-pill').forEach(b => b.classList.toggle('active', b.dataset.mode === stakeState.riskMode));
+  document.getElementById('customRiskRow').classList.toggle('show', stakeState.riskMode === 'custom');
+  document.getElementById('stakeMartToggle').classList.toggle('on', stakeState.martingaleOn);
+  document.getElementById('mgBox').classList.toggle('show', stakeState.martingaleOn);
+  renderCurrencyPills('stakeCurrencyPills', stakeState.currency, changeStakeCurrency);
+  document.querySelectorAll('.stake-cur-label').forEach(e => e.textContent = stakeState.currency);
+}
+
 // ===== CURRENCY PILLS =====
 function renderCurrencyPills(containerId, activeSym, onChange) {
   const c = document.getElementById(containerId);
@@ -2212,15 +2596,15 @@ function resetCustomAmounts() {
 let historyModalMode = 'six';
 function openHistoryModal(mode) {
   historyModalMode = mode;
-  const history = mode === 'six' ? sixState.history : singleState.history;
-  const currency = mode === 'six' ? sixState.currency : singleState.currency;
+  const history = mode === 'six' ? sixState.history : mode === 'single' ? singleState.history : stakeState.history;
+  const currency = mode === 'six' ? sixState.currency : mode === 'single' ? singleState.currency : stakeState.currency;
   const body = document.getElementById('modalBody');
   if (!history.length) { body.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted)">Henüz işlem yok</div>'; }
   else {
     body.innerHTML = history.map(h => `
       <div class="modal-entry">
         <div class="modal-entry-left">
-          <div class="modal-entry-type ${h.type==='WIN'?'win':'loss'}">${h.type}</div>
+          <div class="modal-entry-type ${h.type==='WIN'?'win':'loss'}">${h.type}${h.mg?' · MG':''}</div>
           <div class="modal-entry-time">${h.date}</div>
         </div>
         <div class="modal-entry-amt">${h.type==='WIN'?'+':'-'}${fmt(h.amount, currency)}</div>
@@ -2235,11 +2619,11 @@ function closeHistoryModal() {
 
 // ===== EXPORT / IMPORT =====
 function exportData(mode) {
-  const data = mode === 'six' ? sixState : singleState;
+  const data = mode === 'six' ? sixState : mode === 'single' ? singleState : stakeState;
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `tradeflow-${mode}-${Date.now()}.json`;
+  a.download = `alptrade-${mode}-${Date.now()}.json`;
   a.click();
   showToast('Veriler dışa aktarıldı', 'info');
 }
@@ -2256,12 +2640,18 @@ function importData(event, mode) {
         updateSixStats();
         renderSixHistory();
         updateSixBalanceDisplay();
-      } else {
+      } else if (mode === 'single') {
         singleState = d;
         recalcSingle();
         updateSingleStats();
         renderSingleHistory();
         updateSingleBalanceDisplay();
+      } else {
+        stakeState = Object.assign(stakeState, d);
+        hydrateStakeUI();
+        updateStakeStats();
+        renderStakeHistory();
+        updateStakeBalanceDisplay();
       }
       showToast('Veriler içe aktarıldı!', 'win');
       saveUserData();
@@ -2326,38 +2716,51 @@ document.addEventListener('keydown', e => {
     if (e.key.toLowerCase() === 'w') handleSingleAction('win');
     if (e.key.toLowerCase() === 'l') handleSingleAction('loss');
   }
+  if (currentPage === 'stakePage') {
+    if (e.key.toLowerCase() === 'w') handleStakeAction('win');
+    if (e.key.toLowerCase() === 'l') handleStakeAction('loss');
+  }
   if (e.key === 'Escape') { closeHistoryModal(); closeAdvancedPanel(); closePicker(); }
 });
 
 // ===== INIT =====
-function init() {
-  // Restore theme
-  const savedTheme = localStorage.getItem('tf_theme') || '';
+async function init() {
+  let savedTheme = '';
+  try {
+    const themeRes = await window.storage.get('at_theme', false);
+    if (themeRes && themeRes.value) savedTheme = themeRes.value;
+  } catch(e) { /* tema kaydı yok */ }
   document.documentElement.setAttribute('data-theme', savedTheme);
   document.querySelectorAll('.theme-option').forEach(o => o.classList.toggle('active', o.dataset.theme === savedTheme));
 
-  // Check auto-login
-  const lastUser = localStorage.getItem('tf_lastUser');
-  if (lastUser && users[lastUser]) {
-    loginSuccess(lastUser, users[lastUser].name);
-  }
+  try {
+    const usersRes = await window.storage.get('at_users', false);
+    if (usersRes && usersRes.value) users = JSON.parse(usersRes.value);
+  } catch(e) { /* kayıtlı kullanıcı yok, demo ile devam */ }
+
+  let lastUser = null;
+  try {
+    const luRes = await window.storage.get('at_lastUser', false);
+    if (luRes && luRes.value) lastUser = luRes.value;
+  } catch(e) { /* son kullanıcı kaydı yok */ }
 
   initParticles();
   renderCurrencyPills('sixCurrencyPills', '$', changeSixCurrency);
   renderCurrencyPills('singleCurrencyPills', '$', changeSingleCurrency);
+  renderCurrencyPills('stakeCurrencyPills', stakeState.currency, changeStakeCurrency);
   renderSixLevels();
   updateSixStats();
   updateSingleStats();
+  updateStakeStats();
+  renderStakeHistory();
   updateSixBalanceDisplay();
   updateSingleBalanceDisplay();
-}
+  updateStakeBalanceDisplay();
 
-// Save last user on login
-const _origLoginSuccess = loginSuccess;
-window.loginSuccess = function(username, name) {
-  localStorage.setItem('tf_lastUser', username);
-  _origLoginSuccess(username, name);
-};
+  if (lastUser && users[lastUser]) {
+    await loginSuccess(lastUser, users[lastUser].name);
+  }
+}
 
 init();
 </script>
