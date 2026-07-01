@@ -1,0 +1,2844 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>AlpTrade — Pro Trading Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ===== THEME VARIABLES ===== */
+:root {
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Outfit', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+
+  /* DARK THEME (default) */
+  --bg: #080b14;
+  --bg2: #0d1220;
+  --bg3: #121929;
+  --surface: #161f30;
+  --surface2: #1e2d45;
+  --border: rgba(255,255,255,0.07);
+  --border-hover: rgba(255,255,255,0.15);
+  --text: #f0f4ff;
+  --text-muted: #7a8ba8;
+  --text-dim: #4a5a72;
+  --accent: #4f8ef7;
+  --accent2: #7b5fff;
+  --accent-glow: rgba(79,142,247,0.25);
+  --win: #00d4a0;
+  --win-glow: rgba(0,212,160,0.25);
+  --win-bg: rgba(0,212,160,0.08);
+  --loss: #f7455a;
+  --loss-glow: rgba(247,69,90,0.25);
+  --loss-bg: rgba(247,69,90,0.08);
+  --gold: #f5a623;
+  --card-shadow: 0 8px 40px rgba(0,0,0,0.4);
+  --card-shadow-hover: 0 16px 60px rgba(0,0,0,0.6);
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+[data-theme="light"] {
+  --bg: #f0f4fc;
+  --bg2: #e8edf8;
+  --bg3: #dce3f3;
+  --surface: #ffffff;
+  --surface2: #f4f7ff;
+  --border: rgba(0,0,0,0.07);
+  --border-hover: rgba(0,0,0,0.15);
+  --text: #0f1829;
+  --text-muted: #5a6a85;
+  --text-dim: #99aabf;
+  --accent: #3370e0;
+  --accent2: #6442e0;
+  --accent-glow: rgba(51,112,224,0.2);
+  --win: #00a87d;
+  --win-glow: rgba(0,168,125,0.2);
+  --win-bg: rgba(0,168,125,0.07);
+  --loss: #e0283c;
+  --loss-glow: rgba(224,40,60,0.2);
+  --loss-bg: rgba(224,40,60,0.07);
+  --gold: #d4890f;
+  --card-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --card-shadow-hover: 0 8px 40px rgba(0,0,0,0.14);
+}
+
+[data-theme="cyberpunk"] {
+  --bg: #020408;
+  --bg2: #050c10;
+  --bg3: #071218;
+  --surface: #0a1a22;
+  --surface2: #0f2030;
+  --border: rgba(0,255,200,0.08);
+  --border-hover: rgba(0,255,200,0.2);
+  --text: #d0ffe8;
+  --text-muted: #4daa80;
+  --text-dim: #2d6650;
+  --accent: #00ffe0;
+  --accent2: #ff00aa;
+  --accent-glow: rgba(0,255,224,0.3);
+  --win: #00ff9f;
+  --win-glow: rgba(0,255,159,0.35);
+  --win-bg: rgba(0,255,159,0.06);
+  --loss: #ff0055;
+  --loss-glow: rgba(255,0,85,0.35);
+  --loss-bg: rgba(255,0,85,0.06);
+  --gold: #ffe600;
+  --card-shadow: 0 0 30px rgba(0,255,200,0.07);
+  --card-shadow-hover: 0 0 50px rgba(0,255,200,0.15);
+}
+
+[data-theme="aurora"] {
+  --bg: #0a0612;
+  --bg2: #0e0a1a;
+  --bg3: #140e22;
+  --surface: #1a1030;
+  --surface2: #21163c;
+  --border: rgba(180,120,255,0.1);
+  --border-hover: rgba(180,120,255,0.25);
+  --text: #f0e8ff;
+  --text-muted: #9a7dc0;
+  --text-dim: #5a4a80;
+  --accent: #c77dff;
+  --accent2: #4cc9f0;
+  --accent-glow: rgba(199,125,255,0.3);
+  --win: #56cfb2;
+  --win-glow: rgba(86,207,178,0.3);
+  --win-bg: rgba(86,207,178,0.07);
+  --loss: #ff6b6b;
+  --loss-glow: rgba(255,107,107,0.3);
+  --loss-bg: rgba(255,107,107,0.07);
+  --gold: #ffd166;
+  --card-shadow: 0 8px 40px rgba(100,0,200,0.2);
+  --card-shadow-hover: 0 16px 60px rgba(100,0,200,0.35);
+}
+
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+
+html {
+  scroll-behavior: smooth;
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  transition: background 0.4s ease, color 0.4s ease;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+input, textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Animated background mesh */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, var(--accent-glow) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, var(--accent-glow) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+  animation: meshMove 12s ease-in-out infinite alternate;
+  opacity: 0.6;
+}
+
+@keyframes meshMove {
+  0% { opacity: 0.4; transform: scale(1); }
+  100% { opacity: 0.8; transform: scale(1.05); }
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+/* ===== PAGE SYSTEM ===== */
+body { perspective: 1600px; }
+.page {
+  position: absolute;
+  inset: 0;
+  min-height: 100vh;
+  opacity: 0;
+  transform: translateX(70px) translateZ(-80px) rotateY(-6deg) scale(0.96);
+  transform-origin: left center;
+  transition: opacity 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1);
+  pointer-events: none;
+  z-index: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}
+.page.active {
+  opacity: 1;
+  transform: translateX(0) translateZ(0) rotateY(0deg) scale(1);
+  pointer-events: all;
+  z-index: 2;
+}
+.page.exiting {
+  opacity: 0;
+  transform: translateX(-70px) translateZ(-80px) rotateY(6deg) scale(0.96);
+  transform-origin: right center;
+  pointer-events: none;
+}
+
+/* ===== PARTICLES ===== */
+#particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 50%;
+  opacity: 0;
+  animation: particleFly linear infinite;
+}
+@keyframes particleFly {
+  0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(-20px) translateX(var(--drift)); opacity: 0; }
+}
+
+/* ===== CARD ===== */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--card-shadow);
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--noise);
+  pointer-events: none;
+  opacity: 0.5;
+  border-radius: inherit;
+}
+.card:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--card-shadow-hover);
+}
+
+/* ===== HOME PAGE ===== */
+#homePage {
+  min-height: 100vh;
+  display: block;
+  padding: 0;
+  overflow-x: hidden;
+}
+.home-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(8,11,20,0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+}
+[data-theme="light"] .home-nav { background: rgba(240,244,252,0.8); }
+[data-theme="cyberpunk"] .home-nav { background: rgba(2,4,8,0.85); }
+[data-theme="aurora"] .home-nav { background: rgba(10,6,18,0.85); }
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--text), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nav-right { display: flex; align-items: center; gap: 8px; }
+.nav-icon-btn {
+  width: 40px; height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 15px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.nav-icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ===== 3D HERO ===== */
+.hero-section {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 96px 24px 40px;
+  position: relative;
+  perspective: 1200px;
+}
+.hero-3d-stage {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  height: 220px;
+  margin-bottom: 8px;
+  transform-style: preserve-3d;
+  animation: heroStageIntro 0.9s cubic-bezier(0.16,1,0.3,1) both, heroStageFloat 7s ease-in-out 0.9s infinite;
+}
+@keyframes heroStageIntro { from { opacity:0; transform: rotateX(20deg) rotateY(-20deg) translateY(30px) scale(0.85); } to { opacity:1; transform: rotateX(8deg) rotateY(-6deg) translateY(0) scale(1); } }
+@keyframes heroStageFloat {
+  0%, 100% { transform: rotateX(8deg) rotateY(-6deg) translateY(0); }
+  50% { transform: rotateX(4deg) rotateY(6deg) translateY(-12px); }
+}
+.hero-3d-card {
+  position: absolute;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  backdrop-filter: blur(6px);
+  padding: 14px 16px;
+  transform-style: preserve-3d;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hero-3d-card .h3c-label { font-size: 0.62rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 700; }
+.hero-3d-card .h3c-val { font-family: var(--font-mono); font-size: 1.05rem; font-weight: 700; }
+.hero-3d-card.c1 {
+  width: 168px; left: 4%; top: 8px;
+  transform: translateZ(60px) rotateY(-14deg);
+  animation: cardFloat1 6s ease-in-out infinite;
+  border-color: rgba(0,212,160,0.25);
+}
+.hero-3d-card.c1 .h3c-val { color: var(--win); }
+.hero-3d-card.c2 {
+  width: 178px; right: 2%; top: 46px;
+  transform: translateZ(90px) rotateY(10deg);
+  animation: cardFloat2 8s ease-in-out infinite;
+  border-color: rgba(245,166,35,0.25);
+}
+.hero-3d-card.c2 .h3c-val { color: var(--gold); }
+.hero-3d-card.c3 {
+  width: 150px; left: 22%; bottom: 0;
+  transform: translateZ(30px) rotateY(2deg);
+  animation: cardFloat3 7s ease-in-out infinite;
+  border-color: rgba(79,142,247,0.25);
+}
+.hero-3d-card.c3 .h3c-val { color: var(--accent); }
+@keyframes cardFloat1 { 0%,100%{ transform:translateZ(60px) rotateY(-14deg) translateY(0); } 50%{ transform:translateZ(70px) rotateY(-10deg) translateY(-10px); } }
+@keyframes cardFloat2 { 0%,100%{ transform:translateZ(90px) rotateY(10deg) translateY(0); } 50%{ transform:translateZ(100px) rotateY(14deg) translateY(-14px); } }
+@keyframes cardFloat3 { 0%,100%{ transform:translateZ(30px) rotateY(2deg) translateY(0); } 50%{ transform:translateZ(40px) rotateY(-4deg) translateY(-8px); } }
+.hero-3d-orb {
+  position: absolute;
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  left: 50%; top: 50%;
+  transform: translate(-50%,-50%) translateZ(-40px);
+  background: radial-gradient(circle at 35% 30%, var(--accent) 0%, var(--accent2) 55%, transparent 75%);
+  opacity: 0.35;
+  filter: blur(6px);
+  animation: orbSpin 10s linear infinite;
+}
+@keyframes orbSpin { 0%{ transform:translate(-50%,-50%) translateZ(-40px) rotate(0deg) scale(1); } 50%{ transform:translate(-50%,-50%) translateZ(-40px) rotate(180deg) scale(1.15); } 100%{ transform:translate(-50%,-50%) translateZ(-40px) rotate(360deg) scale(1); } }
+
+.home-hero {
+  text-align: center;
+  margin-bottom: 28px;
+  animation: fadeInDown 0.7s ease both;
+  position: relative;
+  z-index: 2;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--win-bg);
+  border: 1px solid rgba(0,212,160,0.2);
+  border-radius: 100px;
+  color: var(--win);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.hero-badge .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--win);
+  animation: blink 1.5s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.home-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  margin-bottom: 16px;
+}
+.hero-gradient {
+  background: linear-gradient(135deg, var(--text) 0%, var(--accent) 50%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.home-hero p {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+.start-mgmt-btn {
+  margin-top: 32px;
+  padding: 17px 38px;
+  border: none;
+  border-radius: 100px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 10px 40px var(--accent-glow);
+  display: inline-flex; align-items: center; gap: 10px;
+  transition: all 0.25s cubic-bezier(0.16,1,0.3,1);
+  position: relative;
+  z-index: 2;
+}
+.start-mgmt-btn:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 16px 50px var(--accent-glow); }
+.start-mgmt-btn:active { transform: translateY(0) scale(0.98); }
+.start-mgmt-btn i { transition: transform 0.3s; }
+.start-mgmt-btn:hover i { transform: translateY(3px); }
+
+.scroll-hint {
+  position: absolute;
+  bottom: 28px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  color: var(--text-dim);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  animation: fadeInUp 0.8s ease 0.4s both;
+}
+.scroll-hint .sh-arrow { animation: scrollBounce 1.8s ease-in-out infinite; font-size: 14px; }
+@keyframes scrollBounce { 0%,100%{ transform:translateY(0); opacity:0.5; } 50%{ transform:translateY(6px); opacity:1; } }
+
+/* ===== MODES SECTION ===== */
+.modes-section {
+  padding: 20px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.section-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+  text-align: center;
+}
+.section-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-align: center;
+  margin-bottom: 36px;
+  max-width: 560px;
+}
+.home-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 760px;
+}
+@media(max-width:480px) { .home-cards { grid-template-columns: 1fr; } }
+.mode-card {
+  padding: 32px 24px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+}
+.mode-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.mode-card.six::before { background: radial-gradient(circle at 50% 50%, var(--win-glow) 0%, transparent 70%); }
+.mode-card.single::before { background: radial-gradient(circle at 50% 50%, var(--loss-glow) 0%, transparent 70%); }
+.mode-card.stake::before { background: radial-gradient(circle at 50% 50%, rgba(245,166,35,0.25) 0%, transparent 70%); }
+.mode-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: var(--card-shadow-hover); border-color: var(--border-hover); }
+.mode-card.six:hover { border-color: var(--win); }
+.mode-card.single:hover { border-color: var(--loss); }
+.mode-card.stake:hover { border-color: var(--gold); }
+.mode-card:hover::before { opacity: 1; }
+.mode-card-icon {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+.mode-card.six .mode-card-icon { background: var(--win-bg); color: var(--win); box-shadow: 0 4px 20px var(--win-glow); }
+.mode-card.single .mode-card-icon { background: var(--loss-bg); color: var(--loss); box-shadow: 0 4px 20px var(--loss-glow); }
+.mode-card.stake .mode-card-icon { background: rgba(245,166,35,0.1); color: var(--gold); box-shadow: 0 4px 20px rgba(245,166,35,0.25); }
+.mode-card h2 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+  position: relative;
+  z-index: 1;
+}
+.mode-card p { font-size: 0.82rem; color: var(--text-muted); position: relative; z-index: 1; }
+.mode-card-arrow {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  margin-top: 16px;
+  font-size: 12px;
+  transition: transform 0.3s;
+  position: relative;
+  z-index: 1;
+}
+.mode-card.six .mode-card-arrow { background: var(--win-bg); color: var(--win); }
+.mode-card.single .mode-card-arrow { background: var(--loss-bg); color: var(--loss); }
+.mode-card.stake .mode-card-arrow { background: rgba(245,166,35,0.1); color: var(--gold); }
+.mode-card:hover .mode-card-arrow { transform: translateX(4px); }
+
+/* ===== ABOUT SECTION ===== */
+.about-section {
+  padding: 60px 24px;
+  max-width: 820px;
+  margin: 0 auto;
+}
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 32px;
+}
+.about-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: var(--card-shadow);
+}
+.about-item .ai-icon {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  background: var(--accent-glow);
+  color: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+  margin-bottom: 14px;
+}
+.about-item h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.about-item p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+/* ===== WARNING SECTION ===== */
+.warning-section {
+  padding: 40px 24px 60px;
+  max-width: 820px;
+  margin: 0 auto;
+}
+.warning-box {
+  background: var(--loss-bg);
+  border: 1px solid rgba(247,69,90,0.25);
+  border-radius: 20px;
+  padding: 28px;
+}
+.warning-box .wb-head {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 16px;
+}
+.warning-box .wb-head i { font-size: 22px; color: var(--loss); }
+.warning-box .wb-head h3 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--loss);
+}
+.warning-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.warning-list li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 0.87rem;
+  color: var(--text);
+  line-height: 1.55;
+}
+.warning-list li i { color: var(--loss); font-size: 13px; margin-top: 4px; flex-shrink: 0; }
+.warning-list li b { color: var(--loss); }
+
+/* ===== FOOTER ===== */
+.home-footer {
+  padding: 32px 24px 44px;
+  text-align: center;
+  border-top: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+.home-footer .hf-logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-size: 0.92rem;
+}
+
+/* Theme Picker */
+.theme-picker {
+  position: fixed;
+  top: 70px; right: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: var(--card-shadow);
+  z-index: 200;
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 160px;
+  animation: slideDown 0.2s ease;
+}
+.theme-picker.open { display: flex; }
+@keyframes slideDown { from{ opacity:0; transform:translateY(-8px); } to{ opacity:1; transform:translateY(0); } }
+.theme-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+.theme-option:hover, .theme-option.active { background: var(--surface2); color: var(--text); }
+.theme-dot {
+  width: 20px; height: 20px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+/* ===== TRADING PAGE ===== */
+.trading-page-wrapper {
+  min-height: 100vh;
+  padding-top: 72px;
+}
+.trading-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(8,11,20,0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+}
+[data-theme="light"] .trading-nav { background: rgba(240,244,252,0.85); }
+[data-theme="cyberpunk"] .trading-nav { background: rgba(2,4,8,0.9); }
+[data-theme="aurora"] .trading-nav { background: rgba(10,6,18,0.9); }
+
+.back-btn {
+  width: 38px; height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.back-btn:hover { border-color: var(--accent); color: var(--accent); }
+.trading-nav-title {
+  flex: 1;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.trading-nav-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.advanced-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.advanced-btn:hover, .advanced-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(245,166,35,0.08); }
+.advanced-btn i { font-size: 12px; }
+.sound-btn {
+  width: 38px; height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.sound-btn:hover { border-color: var(--accent); color: var(--accent); }
+.sound-btn.muted { opacity: 0.5; }
+
+/* Trading Layout */
+.trading-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+@media(min-width:900px) {
+  .trading-layout { grid-template-columns: 1fr 380px; }
+}
+@media(min-width:1200px) {
+  .trading-layout { grid-template-columns: 1fr 340px 300px; }
+}
+
+/* Settings Card */
+.settings-card {}
+.card-title {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.card-title::before {
+  content: '';
+  width: 3px; height: 14px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.field-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+.field-input {
+  width: 100%;
+  padding: 13px 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-bottom: 14px;
+}
+.field-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+.field-input::-webkit-inner-spin-button, .field-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+}
+.toggle-label { font-size: 0.88rem; color: var(--text-muted); font-weight: 500; }
+.toggle-switch {
+  width: 44px; height: 24px;
+  background: var(--bg3);
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: background 0.3s;
+  flex-shrink: 0;
+}
+.toggle-switch.on { background: var(--accent); border-color: var(--accent); }
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  top: 2px; left: 2px;
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.toggle-switch.on::after { transform: translateX(20px); }
+
+/* Balance Card */
+.balance-card {}
+.balance-big {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  margin: 8px 0;
+  transition: color 0.3s;
+}
+.balance-big.danger { color: var(--loss); }
+.balance-subtitle { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 16px; }
+
+/* Levels Card */
+.levels-grid { display: flex; flex-direction: column; gap: 8px; }
+.level-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+  cursor: default;
+}
+.level-row.active {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+  box-shadow: 0 0 20px var(--accent-glow), inset 0 0 20px var(--accent-glow);
+  transform: scale(1.02);
+}
+.level-pulse {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+.level-row.active .level-pulse {
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: blink 1s infinite;
+}
+.level-tag {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  min-width: 28px;
+  transition: color 0.3s;
+}
+.level-row.active .level-tag { color: var(--accent); }
+.level-amount {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+}
+.level-edit-input {
+  margin-left: auto;
+  width: 100px;
+  padding: 4px 8px;
+  background: var(--bg);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  outline: none;
+  text-align: right;
+}
+
+/* Controls Card */
+.controls-card { position: sticky; top: 88px; }
+.win-btn, .loss-btn {
+  width: 100%;
+  padding: 18px;
+  border: none;
+  border-radius: 16px;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: all 0.2s cubic-bezier(0.16,1,0.3,1);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.win-btn {
+  background: var(--win);
+  color: #fff;
+  box-shadow: 0 8px 30px var(--win-glow);
+}
+.win-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.win-btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 16px 40px var(--win-glow); }
+.win-btn:hover::after { opacity: 1; }
+.win-btn:active { transform: scale(0.97); }
+.loss-btn {
+  background: var(--loss);
+  color: #fff;
+  box-shadow: 0 8px 30px var(--loss-glow);
+}
+.loss-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.loss-btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 16px 40px var(--loss-glow); }
+.loss-btn:hover::after { opacity: 1; }
+.loss-btn:active { transform: scale(0.97); }
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: rippleAnim 0.6s linear;
+  pointer-events: none;
+}
+.win-btn .ripple { background: rgba(255,255,255,0.3); }
+.loss-btn .ripple { background: rgba(255,255,255,0.3); }
+@keyframes rippleAnim {
+  to { transform: scale(4); opacity: 0; }
+}
+.reset-btn-small {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.reset-btn-small:hover { border-color: var(--loss); color: var(--loss); background: var(--loss-bg); }
+
+/* Stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 8px;
+}
+.stat-chip {
+  padding: 14px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  text-align: center;
+  transition: all 0.2s;
+}
+.stat-chip:hover { border-color: var(--border-hover); }
+.stat-chip-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 6px; }
+.stat-chip-value { font-family: var(--font-mono); font-size: 1.15rem; font-weight: 500; color: var(--text); }
+.stat-chip-value.win-color { color: var(--win); }
+.stat-chip-value.loss-color { color: var(--loss); }
+
+/* Summary Row */
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+@media(max-width:700px) { .summary-row { grid-template-columns: repeat(2,1fr); } }
+.summary-chip {
+  padding: 18px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s;
+}
+.summary-chip:hover { border-color: var(--border-hover); transform: translateY(-2px); box-shadow: var(--card-shadow-hover); }
+.summary-chip-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; margin-bottom: 8px; }
+.summary-chip-value { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; }
+
+/* Currency Selector */
+.currency-pills {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.currency-pill {
+  padding: 8px 18px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.currency-pill:hover { border-color: var(--border-hover); color: var(--text); }
+.currency-pill.active { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+
+/* History */
+.history-section {
+  padding: 0 20px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.see-all-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.see-all-btn:hover { border-color: var(--accent); color: var(--accent); }
+.history-feed {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+}
+.history-entry {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+  animation: slideInRight 0.3s ease both;
+}
+@keyframes slideInRight {
+  from { opacity:0; transform:translateX(20px); }
+  to { opacity:1; transform:translateX(0); }
+}
+.history-entry:last-child { border-bottom: none; }
+.history-entry:hover { background: var(--surface2); }
+.history-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.history-badge.win { background: var(--win-bg); color: var(--win); }
+.history-badge.loss { background: var(--loss-bg); color: var(--loss); }
+.history-time { font-size: 0.75rem; color: var(--text-muted); }
+.history-amt { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 500; margin-left: auto; }
+
+/* Export/Import */
+.actions-row {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  padding: 0 20px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.action-btn {
+  flex: 1;
+  min-width: 140px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.action-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ===== ADVANCED PANEL ===== */
+.advanced-panel {
+  position: fixed;
+  top: 0; right: 0;
+  width: min(400px, 100vw);
+  height: 100%;
+  background: var(--bg2);
+  border-left: 1px solid var(--border);
+  z-index: 500;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.advanced-panel.open { transform: translateX(0); }
+.panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 499;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.panel-overlay.open { opacity: 1; pointer-events: all; }
+.panel-header {
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.panel-header h2 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.panel-close {
+  width: 36px; height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.panel-close:hover { border-color: var(--loss); color: var(--loss); }
+.panel-body { padding: 24px; flex: 1; overflow-y: auto; }
+.panel-section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.panel-level-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+.panel-level-tag {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 28px;
+}
+.panel-level-input {
+  flex: 1;
+  padding: 8px 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.panel-level-input:focus { border-color: var(--accent); }
+.panel-save-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 16px;
+  box-shadow: 0 4px 20px var(--accent-glow);
+}
+.panel-save-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--accent-glow); }
+.panel-reset-btn {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+.panel-reset-btn:hover { border-color: var(--loss); color: var(--loss); }
+
+/* ===== HISTORY MODAL ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  z-index: 600;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-box {
+  width: 100%; max-width: 560px;
+  max-height: 80vh;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+  transform: scale(0.94) translateY(16px);
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.modal-overlay.open .modal-box { transform: scale(1) translateY(0); }
+.modal-head {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.modal-head h2 { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; }
+.modal-head-close {
+  width: 34px; height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--bg2);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+.modal-head-close:hover { border-color: var(--loss); color: var(--loss); }
+.modal-body { flex: 1; overflow-y: auto; padding: 16px; }
+.modal-entry {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  margin-bottom: 8px;
+  transition: border-color 0.2s;
+}
+.modal-entry:hover { border-color: var(--border-hover); }
+.modal-entry-left { flex: 1; }
+.modal-entry-type {
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.modal-entry-type.win { color: var(--win); }
+.modal-entry-type.loss { color: var(--loss); }
+.modal-entry-time { font-size: 0.75rem; color: var(--text-muted); }
+.modal-entry-amt {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+/* ===== TOAST ===== */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+.toast {
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #fff;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  animation: toastIn 0.35s cubic-bezier(0.16,1,0.3,1) both;
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 8px;
+}
+.toast.win { background: var(--win); }
+.toast.loss { background: var(--loss); }
+.toast.info { background: var(--accent); }
+@keyframes toastIn {
+  from { opacity:0; transform:translateY(20px) scale(0.9); }
+  to { opacity:1; transform:translateY(0) scale(1); }
+}
+@keyframes toastOut {
+  from { opacity:1; transform:translateY(0) scale(1); }
+  to { opacity:0; transform:translateY(-20px) scale(0.9); }
+}
+
+/* ===== WIN/LOSS FLASH ===== */
+.flash-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 800;
+  opacity: 0;
+}
+.flash-overlay.win-flash { animation: winFlash 0.5s ease; }
+.flash-overlay.loss-flash { animation: lossFlash 0.5s ease; }
+@keyframes winFlash {
+  0% { background: rgba(0,212,160,0); opacity: 0; }
+  30% { background: rgba(0,212,160,0.15); opacity: 1; }
+  100% { background: rgba(0,212,160,0); opacity: 0; }
+}
+@keyframes lossFlash {
+  0% { background: rgba(247,69,90,0); opacity: 0; }
+  30% { background: rgba(247,69,90,0.15); opacity: 1; }
+  100% { background: rgba(247,69,90,0); opacity: 0; }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInDown { from { opacity:0; transform:translateY(-24px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeInUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+
+/* Number counter animation */
+.counting { animation: countPop 0.3s cubic-bezier(0.16,1,0.3,1); }
+@keyframes countPop { 0%{transform:scale(1)} 50%{transform:scale(1.12)} 100%{transform:scale(1)} }
+
+/* ===== STAKE SYSTEM ===== */
+.risk-modes { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:12px; }
+.risk-pill {
+  background:var(--bg2); border:1px solid var(--border); color:var(--text-muted);
+  border-radius:10px; padding:9px 2px; font-family:var(--font-body); font-size:0.68rem; font-weight:700;
+  cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:2px; transition:all 0.2s;
+}
+.risk-pill span.p { font-family:var(--font-mono); font-size:0.8rem; font-weight:700; }
+.risk-pill.active { border-color:var(--gold); background:rgba(245,166,35,0.1); color:var(--gold); }
+.custom-risk-row { display:none; margin-bottom:14px; }
+.custom-risk-row.show { display:block; }
+.custom-risk-row input[type=range] { width:100%; accent-color:var(--gold); }
+.custom-risk-row .crr-val { font-family:var(--font-mono); font-size:0.78rem; color:var(--text-muted); text-align:center; margin-top:4px; }
+
+.balance-with-ring { display:flex; align-items:center; gap:16px; }
+.goal-ring-wrap { position:relative; width:84px; height:84px; flex-shrink:0; }
+.goal-ring-wrap svg { transform:rotate(-90deg); width:84px; height:84px; }
+.goal-ring-pct { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.goal-ring-pct .grp-num { font-family:var(--font-display); font-size:1rem; font-weight:800; }
+.goal-ring-pct .grp-lbl { font-size:0.6rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; }
+.balance-ring-info { flex:1; min-width:0; }
+
+.mg-box { margin-top:14px; padding-top:14px; border-top:1px solid var(--border); display:none; }
+.mg-box.show { display:block; }
+.mg-box .mg-note { font-size:0.78rem; color:var(--text-muted); line-height:1.5; margin-bottom:10px; }
+.mg-stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.mg-stat-box { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; }
+.mg-stat-box .l { font-size:0.65rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; }
+.mg-stat-box .v { font-family:var(--font-mono); font-size:1rem; font-weight:700; margin-top:2px; color:var(--text); }
+
+.stake-amt-display { padding:16px; background:var(--bg2); border:1px solid var(--border); border-radius:14px; text-align:center; margin-top:4px; }
+.stake-amt-display .lbl { font-size:0.68rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); }
+.stake-amt-display .amt { font-family:var(--font-display); font-size:1.8rem; font-weight:800; color:var(--gold); margin-top:4px; }
+.stake-amt-display.mg-active .amt { color:var(--loss); }
+.stake-amt-display .sub2 { font-size:0.72rem; color:var(--text-muted); margin-top:4px; }
+.stake-floor-warn { font-size:0.72rem; color:var(--loss); margin-top:8px; font-weight:600; }
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:600px) {
+  .controls-card { position: static; }
+  .trading-nav-title { font-size: 0.95rem; }
+  .advanced-btn span { display: none; }
+  .trading-layout { padding: 12px; gap: 12px; }
+  .card { padding: 16px; border-radius: 16px; }
+  .summary-row { padding: 12px; gap: 8px; }
+  .currency-pills { padding: 12px; }
+  .history-section { padding: 0 12px 12px; }
+  .actions-row { padding: 0 12px 12px; }
+  .balance-big { font-size: 1.9rem; }
+  .home-hero h1 { font-size: 2.1rem; }
+  .home-hero p { font-size: 0.92rem; padding: 0 8px; }
+  .goal-ring-wrap { width: 68px; height: 68px; }
+  .goal-ring-wrap svg { width: 68px; height: 68px; }
+
+  .hero-section { padding: 88px 16px 32px; }
+  .hero-3d-stage { max-width: 300px; height: 180px; }
+  .hero-3d-card { padding: 10px 12px; }
+  .hero-3d-card .h3c-val { font-size: 0.9rem; }
+  .hero-3d-card.c1 { width: 140px; }
+  .hero-3d-card.c2 { width: 148px; }
+  .hero-3d-card.c3 { width: 128px; }
+  .start-mgmt-btn { padding: 15px 28px; font-size: 0.95rem; }
+  .modes-section { padding: 12px 16px 60px; }
+  .about-section { padding: 44px 16px; }
+  .warning-section { padding: 28px 16px 44px; }
+  .warning-box { padding: 20px; }
+  .home-footer { padding: 24px 16px 36px; }
+}
+
+@media(max-width:400px) {
+  .risk-modes { grid-template-columns: repeat(2,1fr); }
+  .stats-grid { gap: 8px; }
+  .stat-chip { padding: 10px 6px; }
+  .field-input { padding: 11px 12px; font-size: 0.92rem; }
+  .balance-with-ring { gap: 10px; }
+  .hero-3d-stage { max-width: 260px; height: 160px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Flash overlay for win/loss -->
+<div class="flash-overlay" id="flashOverlay"></div>
+
+<!-- Particles -->
+<div id="particles"></div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Theme picker -->
+<div class="theme-picker" id="themePicker">
+  <button class="theme-option active" data-theme="" onclick="setTheme('','Koyu')">
+    <div class="theme-dot" style="background:linear-gradient(135deg,#4f8ef7,#7b5fff)"></div> Koyu
+  </button>
+  <button class="theme-option" data-theme="light" onclick="setTheme('light','Açık')">
+    <div class="theme-dot" style="background:linear-gradient(135deg,#3370e0,#f0f4fc)"></div> Açık
+  </button>
+  <button class="theme-option" data-theme="cyberpunk" onclick="setTheme('cyberpunk','Siber')">
+    <div class="theme-dot" style="background:linear-gradient(135deg,#00ffe0,#ff00aa)"></div> Siber
+  </button>
+  <button class="theme-option" data-theme="aurora" onclick="setTheme('aurora','Aurora')">
+    <div class="theme-dot" style="background:linear-gradient(135deg,#c77dff,#4cc9f0)"></div> Aurora
+  </button>
+</div>
+
+<!-- Panel overlay -->
+<div class="panel-overlay" id="panelOverlay" onclick="closeAdvancedPanel()"></div>
+
+<!-- Advanced Panel -->
+<div class="advanced-panel" id="advancedPanel">
+  <div class="panel-header">
+    <h2><i class="fas fa-sliders" style="color:var(--gold);margin-right:8px"></i>Gelişmiş Ayarlar</h2>
+    <button class="panel-close" onclick="closeAdvancedPanel()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="panel-body">
+    <div class="panel-section-title">T× Cycle Miktarları</div>
+    <div id="advancedLevels"></div>
+    <button class="panel-save-btn" onclick="saveCustomAmounts()"><i class="fas fa-save"></i> Kaydet</button>
+    <button class="panel-reset-btn" onclick="resetCustomAmounts()"><i class="fas fa-undo"></i> Otomatik Hesapla</button>
+  </div>
+</div>
+
+<!-- History Modal -->
+<div class="modal-overlay" id="historyModal">
+
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2>İşlem Geçmişi</h2>
+      <button class="modal-head-close" onclick="closeHistoryModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ===== HOME PAGE ===== -->
+<div class="page active" id="homePage">
+  <nav class="home-nav">
+    <div class="nav-logo"><i class="fas fa-chart-line" style="margin-right:8px;font-size:0.9em"></i>AlpTrade</div>
+    <div class="nav-right">
+      <button class="nav-icon-btn sound-btn" id="homeSoundBtn" onclick="toggleSound()" title="Ses"><i class="fas fa-volume-up"></i></button>
+      <button class="nav-icon-btn" id="themeToggleBtn" onclick="toggleThemePicker()" title="Tema"><i class="fas fa-palette"></i></button>
+    </div>
+  </nav>
+
+  <!-- 3D HERO -->
+  <section class="hero-section">
+    <div class="hero-3d-stage">
+      <div class="hero-3d-orb"></div>
+      <div class="hero-3d-card c1"><span class="h3c-label">Win Rate</span><span class="h3c-val">%80</span></div>
+      <div class="hero-3d-card c2"><span class="h3c-label">Hedef Bakiye</span><span class="h3c-val">₺70.000</span></div>
+      <div class="hero-3d-card c3"><span class="h3c-label">Stake</span><span class="h3c-val">%12,5</span></div>
+    </div>
+    <div class="home-hero">
+      <div class="hero-badge"><span class="dot"></span>Aktif Sistem</div>
+      <h1>Akıllı <span class="hero-gradient">Ticaret</span><br>Takip Sistemi</h1>
+      <p>Martingale ve yüzdesel stake stratejileriyle risklerinizi yönetin, kazançlarınızı takip edin.</p>
+      <button class="start-mgmt-btn" onclick="scrollToModes()">Start Management <i class="fas fa-arrow-down"></i></button>
+    </div>
+    <div class="scroll-hint"><span>Aşağı kaydır</span><i class="fas fa-chevron-down sh-arrow"></i></div>
+  </section>
+
+  <!-- MODES -->
+  <section class="modes-section" id="modesSection">
+    <div class="section-eyebrow">Yönetim Modları</div>
+    <h2 class="section-heading">Sana uygun takip sistemini seç</h2>
+    <div class="home-cards">
+      <div class="mode-card six" onclick="navigateTo('sixPage')">
+        <div class="mode-card-icon"><i class="fas fa-layer-group"></i></div>
+        <h2>Six Trade</h2>
+        <p>6 seviyeli martingale döngüsü</p>
+        <div class="mode-card-arrow"><i class="fas fa-arrow-right"></i></div>
+      </div>
+      <div class="mode-card single" onclick="navigateTo('singlePage')">
+        <div class="mode-card-icon"><i class="fas fa-bolt"></i></div>
+        <h2>Single Trade</h2>
+        <p>Klasik tek seviyeli sistem</p>
+        <div class="mode-card-arrow"><i class="fas fa-arrow-right"></i></div>
+      </div>
+      <div class="mode-card stake" onclick="navigateTo('stakePage')">
+        <div class="mode-card-icon"><i class="fas fa-percent"></i></div>
+        <h2>Stake Sistemi</h2>
+        <p>Bakiyenin yüzdesine göre stake + martingale telafi</p>
+        <div class="mode-card-arrow"><i class="fas fa-arrow-right"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about-section">
+    <div class="section-eyebrow" style="text-align:left">Site Hakkında</div>
+    <h2 class="section-heading" style="text-align:left; margin-left:0">AlpTrade nedir, ne yapar?</h2>
+    <p style="color:var(--text-muted); font-size:0.92rem; line-height:1.7; max-width:640px">
+      AlpTrade, ticaret işlemlerinizin sonuçlarını (kazanç/kayıp) girerek bakiyenizin nasıl değiştiğini anlık hesaplayan bir takip aracıdır. Martingale döngüleri, yüzdesel stake yönetimi ve hedef bazlı ilerleme takibi sunar. Tüm veriler yalnızca bu cihazda saklanır.
+    </p>
+    <div class="about-grid">
+      <div class="about-item">
+        <div class="ai-icon"><i class="fas fa-layer-group"></i></div>
+        <h3>Six Trade</h3>
+        <p>6 kademeli martingale döngüsü ile ardışık kayıpları önceden tanımlı seviyelerle telafi etmeyi hedefler.</p>
+      </div>
+      <div class="about-item">
+        <div class="ai-icon"><i class="fas fa-bolt"></i></div>
+        <h3>Single Trade</h3>
+        <p>Sabit miktarlı, tek seviyeli klasik işlem takibi. Basit ve şeffaf.</p>
+      </div>
+      <div class="about-item">
+        <div class="ai-icon"><i class="fas fa-percent"></i></div>
+        <h3>Stake Sistemi</h3>
+        <p>Bakiyenin sabit bir yüzdesine göre stake hesaplar, isteğe bağlı martingale telafi modu sunar.</p>
+      </div>
+      <div class="about-item">
+        <div class="ai-icon"><i class="fas fa-shield-halved"></i></div>
+        <h3>Yerel Depolama</h3>
+        <p>Kayıt/giriş gerektirmez. Girdiğiniz veriler yalnızca bu cihaz ve tarayıcı oturumunda tutulur.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WARNINGS -->
+  <section class="warning-section">
+    <div class="warning-box">
+      <div class="wb-head"><i class="fas fa-triangle-exclamation"></i><h3>Önemli Uyarılar</h3></div>
+      <ul class="warning-list">
+        <li><i class="fas fa-circle-exclamation"></i><span>Bu araç <b>finansal tavsiye değildir</b>. Yalnızca girdiğiniz oranlara göre matematiksel hesaplama yapar.</span></li>
+        <li><i class="fas fa-circle-exclamation"></i><span><b>Martingale sistemleri yüksek risk taşır.</b> Ardışık kayıplarda stake hızla büyür ve bakiyenizin büyük bölümünü kısa sürede kaybedebilirsiniz.</span></li>
+        <li><i class="fas fa-circle-exclamation"></i><span>Geçmiş win rate performansı, gelecekteki sonuçları garanti etmez. Küçük örneklemler (ör. 50 işlem) gerçek olasılığı yanıltıcı gösterebilir.</span></li>
+        <li><i class="fas fa-circle-exclamation"></i><span>Yalnızca kaybetmeyi göze alabileceğiniz miktarlarla işlem yapın. Kayıpları telafi etmek için stake büyütmek riski azaltmaz, artırır.</span></li>
+        <li><i class="fas fa-circle-exclamation"></i><span>Bu bir yatırım danışmanlığı hizmeti değildir; kararlarınızın sorumluluğu size aittir.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="home-footer">
+    <div class="hf-logo">AlpTrade</div>
+    Tüm veriler bu cihazda saklanır, sunucuya gönderilmez.<br>
+    © 2026 AlpTrade — Sadece takip amaçlıdır, finansal tavsiye niteliği taşımaz.
+  </footer>
+</div>
+
+<!-- ===== SIX TRADE PAGE ===== -->
+<div class="page" id="sixPage">
+  <nav class="trading-nav">
+    <button class="back-btn" onclick="navigateTo('homePage')"><i class="fas fa-chevron-left"></i></button>
+    <span class="trading-nav-title">Six Trade Cycle</span>
+    <div class="trading-nav-right">
+      <button class="advanced-btn" id="advancedBtn" onclick="openAdvancedPanel('six')">
+        <i class="fas fa-sliders"></i><span>Gelişmiş</span>
+      </button>
+      <button class="nav-icon-btn sound-btn" id="sixSoundBtn" onclick="toggleSound()"><i class="fas fa-volume-up"></i></button>
+      <button class="nav-icon-btn" onclick="toggleThemePicker()"><i class="fas fa-palette"></i></button>
+    </div>
+  </nav>
+  <div class="trading-page-wrapper">
+    <div class="trading-layout">
+      <!-- Settings -->
+      <div class="card settings-card" style="animation:fadeInUp 0.4s ease both">
+        <div class="card-title">Ayarlar</div>
+        <label class="field-label">T1 Miktar (<span class="six-cur-label">$</span>)</label>
+        <input class="field-input" id="sixAmount" type="number" value="100" min="1" oninput="recalcSix()">
+        <label class="field-label">Karlılık Oranı (%)</label>
+        <input class="field-input" id="sixRate" type="number" value="90" min="1" max="1000" oninput="recalcSix()">
+        <div class="toggle-row">
+          <span class="toggle-label">Bakiye ile işlem yap</span>
+          <div class="toggle-switch" id="sixBalanceToggle" onclick="toggleSixBalance()"></div>
+        </div>
+        <div id="sixBalanceRow" style="display:none;margin-top:12px">
+          <label class="field-label">Bakiye</label>
+          <input class="field-input" id="sixBalance" type="number" value="1000" oninput="updateSixBalance()">
+        </div>
+      </div>
+      <!-- Balance -->
+      <div class="card balance-card" style="animation:fadeInUp 0.4s ease 0.08s both">
+        <div class="card-title">Bakiye</div>
+        <div class="balance-big" id="sixBalanceBig">$1,000</div>
+        <div class="balance-subtitle" id="sixBalanceSub">Bakiye takibi kapalı</div>
+        <!-- Levels -->
+        <div class="card-title" style="margin-top:20px">T Seviyeleri</div>
+        <div class="levels-grid" id="sixLevels"></div>
+      </div>
+      <!-- Controls -->
+      <div class="card controls-card" style="animation:fadeInUp 0.4s ease 0.16s both">
+        <div class="card-title">İşlem</div>
+        <button class="win-btn" id="sixWinBtn" onclick="handleSixAction('win')">
+          <i class="fas fa-check"></i> WIN
+        </button>
+        <button class="loss-btn" id="sixLossBtn" onclick="handleSixAction('loss')">
+          <i class="fas fa-times"></i> LOSS
+        </button>
+        <button class="reset-btn-small" onclick="resetSixData()"><i class="fas fa-rotate-left"></i> Sıfırla</button>
+        <div class="card-title" style="margin-top:20px">İstatistikler</div>
+        <div class="stats-grid">
+          <div class="stat-chip"><div class="stat-chip-label">Toplam Kar</div><div class="stat-chip-value win-color" id="sixTotalProfit">$0</div></div>
+          <div class="stat-chip"><div class="stat-chip-label">Toplam Zarar</div><div class="stat-chip-value loss-color" id="sixTotalLoss">$0</div></div>
+          <div class="stat-chip"><div class="stat-chip-label">Net Kar</div><div class="stat-chip-value" id="sixNetProfit">$0</div></div>
+          <div class="stat-chip"><div class="stat-chip-label">Win Rate</div><div class="stat-chip-value" id="sixWinRate">0%</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-row">
+      <div class="summary-chip"><div class="summary-chip-label">Seviye</div><div class="summary-chip-value" id="sixLevelDisp">T1</div></div>
+      <div class="summary-chip"><div class="summary-chip-label">Toplam</div><div class="summary-chip-value" id="sixTotalTrades">0</div></div>
+      <div class="summary-chip"><div class="summary-chip-label">Kazanan</div><div class="summary-chip-value" style="color:var(--win)" id="sixWinTrades">0</div></div>
+      <div class="summary-chip"><div class="summary-chip-label">Kaybeden</div><div class="summary-chip-value" style="color:var(--loss)" id="sixLossTrades">0</div></div>
+    </div>
+
+    <!-- Currency -->
+    <div class="currency-pills" id="sixCurrencyPills"></div>
+
+    <!-- History -->
+    <div class="history-section">
+      <div class="section-header">
+        <div class="section-title"><i class="fas fa-clock-rotate-left" style="margin-right:8px;opacity:0.5"></i>Son İşlemler</div>
+        <button class="see-all-btn" onclick="openHistoryModal('six')">Tümünü Gör</button>
+      </div>
+      <div class="history-feed" id="sixHistoryFeed"><div style="padding:32px;text-align:center;color:var(--text-muted);font-size:0.85rem">Henüz işlem yok</div></div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions-row">
+      <button class="action-btn" onclick="exportData('six')"><i class="fas fa-download"></i> Dışa Aktar</button>
+      <button class="action-btn" onclick="document.getElementById('sixImportFile').click()"><i class="fas fa-upload"></i> İçe Aktar</button>
+      <input type="file" id="sixImportFile" accept=".json" style="display:none" onchange="importData(event,'six')">
+    </div>
+  </div>
+</div>
+
+<!-- ===== SINGLE TRADE PAGE ===== -->
+<div class="page" id="singlePage">
+  <nav class="trading-nav">
+    <button class="back-btn" onclick="navigateTo('homePage')"><i class="fas fa-chevron-left"></i></button>
+    <span class="trading-nav-title">Single Trade Cycle</span>
+    <div class="trading-nav-right">
+      <button class="nav-icon-btn sound-btn" id="singleSoundBtn" onclick="toggleSound()"><i class="fas fa-volume-up"></i></button>
+      <button class="nav-icon-btn" onclick="toggleThemePicker()"><i class="fas fa-palette"></i></button>
+    </div>
+  </nav>
+  <div class="trading-page-wrapper">
+    <div class="trading-layout">
+      <div class="card" style="animation:fadeInUp 0.4s ease both">
+        <div class="card-title">Ayarlar</div>
+        <label class="field-label">T1 Miktar (<span class="single-cur-label">$</span>)</label>
+        <input class="field-input" id="singleAmount" type="number" value="100" min="1" oninput="recalcSingle()">
+        <label class="field-label">Karlılık Oranı (%)</label>
+        <input class="field-input" id="singleRate" type="number" value="90" min="1" max="1000" oninput="recalcSingle()">
+        <div class="toggle-row">
+          <span class="toggle-label">Bakiye ile işlem yap</span>
+          <div class="toggle-switch" id="singleBalanceToggle" onclick="toggleSingleBalance()"></div>
+        </div>
+        <div id="singleBalanceRow" style="display:none;margin-top:12px">
+          <label class="field-label">Bakiye</label>
+          <input class="field-input" id="singleBalance" type="number" value="1000" oninput="updateSingleBalance()">
+        </div>
+      </div>
+      <div class="card" style="animation:fadeInUp 0.4s ease 0.08s both">
+        <div class="card-title">Bakiye</div>
+        <div class="balance-big" id="singleBalanceBig">$1,000</div>
+        <div class="balance-subtitle" id="singleBalanceSub">Bakiye takibi kapalı</div>
+        <div class="card-title" style="margin-top:20px">T Seviyesi</div>
+        <div class="levels-grid">
+          <div class="level-row active">
+            <div class="level-pulse"></div>
+            <span class="level-tag">T1</span>
+            <span class="level-amount" id="singleT1Amt">$100</span>
+          </div>
+        </div>
+      </div>
+      <div class="card controls-card" style="animation:fadeInUp 0.4s ease 0.16s both">
+        <div class="card-title">İşlem</div>
+        <button class="win-btn" onclick="handleSingleAction('win')"><i class="fas fa-check"></i> WIN</button>
+        <button class="loss-btn" onclick="handleSingleAction('loss')"><i class="fas fa-times"></i> LOSS</button>
+        <button class="reset-btn-small" onclick="resetSingleData()"><i class="fas fa-rotate-left"></i> Sıfırla</button>
+        <div class="card-title" style="margin-top:20px">İstatistikler</div>
+        <div class="stats-grid">
+          <div class="stat-chip"><div class="stat-chip-label">Toplam Kar</div><div class="stat-chip-value win-color" id="singleTotalProfit">$0</div></div>
+          <div class="stat-chip"><div class="stat-chip-label">Toplam Zarar</div><div class="stat-chip-value loss-color" id="singleTotalLoss">$0</div></div>
+          <div class="stat-chip"><div class="stat-chip-label">Net Kar</div><div class="stat-chip-value" id="singleNetProfit">$0</div></div>
+          <div class="stat-chip"><div class="stat-chip-label">Win Rate</div><div class="stat-chip-value" id="singleWinRate">0%</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="summary-row">
+      <div class="summary-chip"><div class="summary-chip-label">Toplam</div><div class="summary-chip-value" id="singleTotalTrades">0</div></div>
+      <div class="summary-chip"><div class="summary-chip-label">Kazanan</div><div class="summary-chip-value" style="color:var(--win)" id="singleWinTrades">0</div></div>
+      <div class="summary-chip"><div class="summary-chip-label">Kaybeden</div><div class="summary-chip-value" style="color:var(--loss)" id="singleLossTrades">0</div></div>
+      <div class="summary-chip"><div class="summary-chip-label">Win Rate</div><div class="summary-chip-value" id="singleWinRate2">0%</div></div>
+    </div>
+    <div class="currency-pills" id="singleCurrencyPills"></div>
+    <div class="history-section">
+      <div class="section-header">
+        <div class="section-title"><i class="fas fa-clock-rotate-left" style="margin-right:8px;opacity:0.5"></i>Son İşlemler</div>
+        <button class="see-all-btn" onclick="openHistoryModal('single')">Tümünü Gör</button>
+      </div>
+      <div class="history-feed" id="singleHistoryFeed"><div style="padding:32px;text-align:center;color:var(--text-muted);font-size:0.85rem">Henüz işlem yok</div></div>
+    </div>
+    <div class="actions-row">
+      <button class="action-btn" onclick="exportData('single')"><i class="fas fa-download"></i> Dışa Aktar</button>
+      <button class="action-btn" onclick="document.getElementById('singleImportFile').click()"><i class="fas fa-upload"></i> İçe Aktar</button>
+      <input type="file" id="singleImportFile" accept=".json" style="display:none" onchange="importData(event,'single')">
+    </div>
+  </div>
+</div>
+
+<!-- ===== STAKE SYSTEM PAGE ===== -->
+<div class="page" id="stakePage">
+  <nav class="trading-nav">
+    <button class="back-btn" onclick="navigateTo('homePage')"><i class="fas fa-chevron-left"></i></button>
+    <span class="trading-nav-title">Stake Sistemi</span>
+    <div class="trading-nav-right">
+      <button class="nav-icon-btn sound-btn" id="stakeSoundBtn" onclick="toggleSound()"><i class="fas fa-volume-up"></i></button>
+      <button class="nav-icon-btn" onclick="toggleThemePicker()"><i class="fas fa-palette"></i></button>
+    </div>
+  </nav>
+  <div class="trading-page-wrapper">
+    <div class="trading-layout">
+      <!-- Settings -->
+      <div class="card settings-card" style="animation:fadeInUp 0.4s ease both">
+        <div class="card-title">Risk Modu</div>
+        <div class="risk-modes" id="riskModes">
+          <button class="risk-pill" data-mode="cons" onclick="setRiskMode('cons',5)"><span>Konserv.</span><span class="p">%5</span></button>
+          <button class="risk-pill" data-mode="mod" onclick="setRiskMode('mod',8)"><span>Orta</span><span class="p">%8</span></button>
+          <button class="risk-pill active" data-mode="agr" onclick="setRiskMode('agr',12.5)"><span>Agresif</span><span class="p">%12,5</span></button>
+          <button class="risk-pill" data-mode="custom" onclick="setRiskMode('custom',null)"><span>Özel</span><span class="p" id="customPctLabel">%?</span></button>
+        </div>
+        <div class="custom-risk-row" id="customRiskRow">
+          <input type="range" id="customRiskSlider" min="1" max="30" step="0.5" value="12.5" oninput="onCustomRiskInput()">
+          <div class="crr-val"><span id="customRiskVal">12,5</span>% bakiye stake olur</div>
+        </div>
+
+        <label class="field-label">Hedef Bakiye (<span class="stake-cur-label">$</span>)</label>
+        <input class="field-input" id="stakeTarget" type="number" value="70000" min="1" oninput="onStakeSettingsChange()">
+
+        <label class="field-label">Kazanırsam (stake'in %)</label>
+        <input class="field-input" id="stakeWinPct" type="number" value="80" min="1" oninput="onStakeSettingsChange()">
+        <label class="field-label">Kaybedersem (stake'in %)</label>
+        <input class="field-input" id="stakeLossPct" type="number" value="100" min="1" oninput="onStakeSettingsChange()">
+
+        <div class="toggle-row">
+          <span class="toggle-label">Martingale (kazanca göre telafi)</span>
+          <div class="toggle-switch" id="stakeMartToggle" onclick="toggleStakeMartingale()"></div>
+        </div>
+        <div class="mg-box" id="mgBox">
+          <div class="mg-note">Kayıp sonrası gereken stake otomatik hesaplanır: <b>telafi edilecek toplam kayıp ÷ (kazanç % ÷ 100)</b>. Kazanınca seri sıfırlanır.</div>
+          <div class="mg-stats-grid">
+            <div class="mg-stat-box"><div class="l">Kademe</div><div class="v" id="mgStreakVal">0</div></div>
+            <div class="mg-stat-box"><div class="l">Telafi Edilecek</div><div class="v" id="mgLossSumVal">$0</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Balance / Goal -->
+      <div class="card" style="animation:fadeInUp 0.4s ease 0.08s both">
+        <div class="card-title">Bakiye & Hedef</div>
+        <div class="balance-with-ring">
+          <div class="goal-ring-wrap">
+            <svg viewBox="0 0 84 84">
+              <circle cx="42" cy="42" r="36" fill="none" stroke="var(--bg3)" stroke-width="7"/>
+              <circle id="stakeRingFg" cx="42" cy="42" r="36" fill="none" stroke="var(--gold)" stroke-width="7" stroke-linecap="round" stroke-dasharray="226.2" stroke-dashoffset="226.2"/>
+            </svg>
+            <div class="goal-ring-pct">
+              <div class="grp-num" id="stakeRingPctNum">0%</div>
+              <div class="grp-lbl">HEDEF</div>
+            </div>
+          </div>
+          <div class="balance-ring-info">
+            <div class="balance-big" id="stakeBalanceBig" style="font-size:1.7rem">$1,000</div>
+            <div class="balance-subtitle" id="stakeBalanceSub">$69,000 kaldı</div>
+          </div>
+        </div>
+        <label class="field-label" style="margin-top:18px">Bakiyeyi Ayarla (<span class="stake-cur-label">$</span>)</label>
+        <input class="field-input" id="stakeBalanceInput" type="number" value="1000" min="0" style="margin-bottom:8px">
+        <button class="reset-btn-small" onclick="applyStakeBalance()" style="border-color:var(--accent);color:var(--accent)"><i class="fas fa-check"></i> Bakiyeyi Uygula</button>
+
+        <div class="stake-amt-display" id="stakeAmtDisplay">
+          <div class="lbl" id="stakeAmtLbl">Bir Sonraki İşlem İçin Stake</div>
+          <div class="amt" id="stakeAmtVal">$125</div>
+          <div class="sub2" id="stakeAmtSub">$1,000 bakiyenin %12,5'i</div>
+          <div class="stake-floor-warn" id="stakeFloorWarn" style="display:none"></div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="card controls-card" style="animation:fadeInUp 0.4s ease 0.16s both">
+        <div class="card-title">İşlem</div>
+        <button class="win-btn" id="stakeWinBtn" onclick="handleStakeAction('win')"><i class="fas fa-check"></i> WIN</button>
+        <button class="loss-btn" id="stakeLossBtn" onclick="handleStakeAction('loss')"><i class="fas fa-times"></i> LOSS</button>
+        <button class="reset-btn-small" onclick="resetStakeData()"><i class="fas fa-rotate-left"></i> Sıfırla</button>
+        <div class="card-title" style="margin-top:20px">İstatistikler</div>
+        <div class="stats-grid">
+          <div class="stat-chip"><div class="stat-chip-label">Toplam Kar</div><div class="stat-chip-value win-color" id="stakeTotalProfit">$0</div></div>
+          <div class="stat-chip"><div class="stat-chip-label">Toplam Zarar</div><div class="stat-chip-value loss-color" id="stakeTotalLoss">$0</div></div>
+          <div class="stat-chip"><div class="stat-chip-label">Net Kar</div><div class="stat-chip-value" id="stakeNetProfit">$0</div></div>
+          <div class="stat-chip"><div class="stat-chip-label">Win Rate</div><div class="stat-chip-value" id="stakeWinRate">0%</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-chip"><div class="summary-chip-label">Hedefe Ulaşma</div><div class="summary-chip-value" id="stakeGoalPctDisp">0%</div></div>
+      <div class="summary-chip"><div class="summary-chip-label">Toplam</div><div class="summary-chip-value" id="stakeTotalTrades">0</div></div>
+      <div class="summary-chip"><div class="summary-chip-label">Kazanan</div><div class="summary-chip-value" style="color:var(--win)" id="stakeWinTrades">0</div></div>
+      <div class="summary-chip"><div class="summary-chip-label">Kaybeden</div><div class="summary-chip-value" style="color:var(--loss)" id="stakeLossTrades">0</div></div>
+    </div>
+
+    <div class="currency-pills" id="stakeCurrencyPills"></div>
+
+    <div class="history-section">
+      <div class="section-header">
+        <div class="section-title"><i class="fas fa-clock-rotate-left" style="margin-right:8px;opacity:0.5"></i>Son İşlemler</div>
+        <button class="see-all-btn" onclick="openHistoryModal('stake')">Tümünü Gör</button>
+      </div>
+      <div class="history-feed" id="stakeHistoryFeed"><div style="padding:32px;text-align:center;color:var(--text-muted);font-size:0.85rem">Henüz işlem yok</div></div>
+    </div>
+
+    <div class="actions-row">
+      <button class="action-btn" onclick="exportData('stake')"><i class="fas fa-download"></i> Dışa Aktar</button>
+      <button class="action-btn" onclick="document.getElementById('stakeImportFile').click()"><i class="fas fa-upload"></i> İçe Aktar</button>
+      <input type="file" id="stakeImportFile" accept=".json" style="display:none" onchange="importData(event,'stake')">
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== ZOOM ENGELLEME =====
+// iOS Safari çift dokunuşta viewport meta'yı görmezden gelip zoom yapabiliyor,
+// bu yüzden dokunma olaylarını da manuel olarak engelliyoruz.
+(function preventZoom() {
+  // Pinch-zoom (iki parmakla yakınlaştırma) engelle
+  document.addEventListener('gesturestart', function (e) { e.preventDefault(); }, { passive: false });
+  document.addEventListener('gesturechange', function (e) { e.preventDefault(); }, { passive: false });
+  document.addEventListener('gestureend', function (e) { e.preventDefault(); }, { passive: false });
+  document.addEventListener('touchmove', function (e) {
+    if (e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
+
+  // Çift dokunma zoom'unu engelle — sadece hızlı ardışık dokunma AYNI noktada
+  // olduğunda devreye girer, buton tıklamalarını (WIN/LOSS gibi) etkilemez.
+  let lastTouchEnd = 0;
+  let lastTouchX = 0, lastTouchY = 0;
+  document.addEventListener('touchend', function (e) {
+    const now = Date.now();
+    const touch = e.changedTouches && e.changedTouches[0];
+    const x = touch ? touch.clientX : 0;
+    const y = touch ? touch.clientY : 0;
+    const dist = Math.hypot(x - lastTouchX, y - lastTouchY);
+    if (now - lastTouchEnd <= 300 && dist < 30) {
+      e.preventDefault();
+    }
+    lastTouchEnd = now;
+    lastTouchX = x;
+    lastTouchY = y;
+  }, { passive: false });
+})();
+
+// ===== STATE =====
+const CURRENCIES = [
+  {code:'USD',sym:'$'},{code:'EUR',sym:'€'},{code:'TRY',sym:'₺'},
+  {code:'BTC',sym:'₿'},{code:'GBP',sym:'£'},{code:'JPY',sym:'¥'}
+];
+
+let soundEnabled = true;
+let audioCtx = null;
+let currentPage = 'homePage';
+let themePickerOpen = false;
+
+let sixState = {
+  level: 1,
+  profit: 0, loss: 0,
+  wins: 0, losses: 0, total: 0,
+  currency: '$',
+  history: [],
+  balance: 1000,
+  useBalance: false,
+  customAmounts: null
+};
+
+let singleState = {
+  profit: 0, loss: 0,
+  wins: 0, losses: 0, total: 0,
+  currency: '$',
+  history: [],
+  balance: 1000,
+  useBalance: false
+};
+
+let stakeState = {
+  balance: 1000,
+  target: 70000,
+  riskMode: 'agr',
+  riskPct: 12.5,
+  winPct: 80,
+  lossPct: 100,
+  currency: '$',
+  martingaleOn: false,
+  martingaleLossSum: 0,
+  martingaleStreak: 0,
+  profit: 0, loss: 0,
+  wins: 0, losses: 0, total: 0,
+  history: []
+};
+
+// ===== AUDIO =====
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+function playWinSound() {
+  if (!soundEnabled) return;
+  try {
+    const ctx = getAudioCtx();
+    const times = [0, 0.12, 0.24];
+    const freqs = [523, 659, 784];
+    times.forEach((t,i) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type = 'sine';
+      o.frequency.value = freqs[i];
+      g.gain.setValueAtTime(0.18, ctx.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.25);
+      o.start(ctx.currentTime + t);
+      o.stop(ctx.currentTime + t + 0.3);
+    });
+  } catch(e){}
+}
+function playLossSound() {
+  if (!soundEnabled) return;
+  try {
+    const ctx = getAudioCtx();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(320, ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.35);
+    g.gain.setValueAtTime(0.15, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(ctx.currentTime);
+    o.stop(ctx.currentTime + 0.45);
+  } catch(e){}
+}
+function playClickSound() {
+  if (!soundEnabled) return;
+  try {
+    const ctx = getAudioCtx();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type = 'sine';
+    o.frequency.value = 880;
+    g.gain.setValueAtTime(0.06, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+    o.start(ctx.currentTime);
+    o.stop(ctx.currentTime + 0.1);
+  } catch(e){}
+}
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  document.querySelectorAll('.sound-btn').forEach(b => {
+    b.innerHTML = soundEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-xmark"></i>';
+    b.classList.toggle('muted', !soundEnabled);
+  });
+  showToast(soundEnabled ? 'Ses açıldı' : 'Ses kapatıldı', 'info');
+}
+
+// ===== PARTICLES =====
+function initParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      --drift:${(Math.random()-0.5)*100}px;
+      animation-duration:${8+Math.random()*12}s;
+      animation-delay:${Math.random()*10}s;
+      width:${1+Math.random()*2}px;
+      height:${1+Math.random()*2}px;
+      opacity:${0.2+Math.random()*0.4};
+    `;
+    container.appendChild(p);
+  }
+}
+
+// ===== APP DATA (kayıt/giriş gerektirmez, tek cihazlık kalıcı depolama) =====
+async function saveUserData() {
+  try {
+    await window.storage.set('at_data', JSON.stringify({ sixState, singleState, stakeState }), false);
+  } catch(e) { console.error('Storage error', e); }
+}
+async function loadUserData() {
+  try {
+    const res = await window.storage.get('at_data', false);
+    if (res && res.value) {
+      const d = JSON.parse(res.value);
+      if (d.sixState) sixState = d.sixState;
+      if (d.singleState) singleState = d.singleState;
+      if (d.stakeState) stakeState = Object.assign(stakeState, d.stakeState);
+    }
+  } catch(e) { /* henüz veri yok */ }
+  renderSixLevels();
+  updateSixStats();
+  renderSixHistory();
+  updateSixBalanceDisplay();
+  recalcSingle();
+  updateSingleStats();
+  renderSingleHistory();
+  updateSingleBalanceDisplay();
+  hydrateStakeUI();
+  updateStakeStats();
+  renderStakeHistory();
+  updateStakeBalanceDisplay();
+}
+
+function scrollToModes() {
+  const el = document.getElementById('modesSection');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ===== NAVIGATION =====
+function navigateTo(pageId) {
+  playClickSound();
+  const cur = document.querySelector('.page.active');
+  if (cur) {
+    cur.classList.add('exiting');
+    setTimeout(() => cur.classList.remove('active','exiting'), 560);
+  }
+  setTimeout(() => {
+    const next = document.getElementById(pageId);
+    next.classList.add('active');
+    next.scrollTop = 0;
+    currentPage = pageId;
+  }, cur ? 70 : 0);
+  closePicker();
+  saveUserData();
+}
+
+// ===== THEME =====
+async function setTheme(theme, label) {
+  document.documentElement.setAttribute('data-theme', theme);
+  try { await window.storage.set('at_theme', theme, false); } catch(e) {}
+  document.querySelectorAll('.theme-option').forEach(o => o.classList.toggle('active', o.dataset.theme === theme));
+  closePicker();
+  showToast(`${label} tema`, 'info');
+}
+function toggleThemePicker() {
+  themePickerOpen = !themePickerOpen;
+  document.getElementById('themePicker').classList.toggle('open', themePickerOpen);
+}
+function closePicker() {
+  themePickerOpen = false;
+  document.getElementById('themePicker').classList.remove('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#themePicker') && !e.target.closest('[onclick*="toggleThemePicker"]')) closePicker();
+});
+
+// ===== FORMAT =====
+function fmt(amount, cur) {
+  const n = Math.round(amount);
+  if (n >= 1000000) return `${cur}${(n/1000000).toFixed(2)}M`;
+  if (n >= 1000) return `${cur}${n.toLocaleString('en-US')}`;
+  return `${cur}${n}`;
+}
+function parseAmt(txt) {
+  if (!txt) return 0;
+  if (txt.includes('M')) return parseFloat(txt.replace(/[^0-9.]/g,'')) * 1000000;
+  return parseFloat(txt.replace(/[^0-9]/g,'')) || 0;
+}
+
+// ===== SIX TRADE =====
+function getSixAmounts() {
+  const base = parseFloat(document.getElementById('sixAmount').value) || 100;
+  const rate = (parseFloat(document.getElementById('sixRate').value) || 90) / 100;
+  if (sixState.customAmounts) return sixState.customAmounts;
+  const amounts = [base];
+  let cumLoss = base;
+  for (let i = 1; i < 6; i++) {
+    const req = (cumLoss + base * rate) / rate;
+    amounts.push(req);
+    cumLoss += req;
+  }
+  return amounts;
+}
+
+function renderSixLevels() {
+  const amounts = getSixAmounts();
+  const container = document.getElementById('sixLevels');
+  container.innerHTML = '';
+  amounts.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'level-row' + (sixState.level === i+1 ? ' active' : '');
+    div.id = `sixLevelRow${i+1}`;
+    div.innerHTML = `
+      <div class="level-pulse"></div>
+      <span class="level-tag">T${i+1}</span>
+      <span class="level-amount" id="sixT${i+1}Amt">${fmt(a, sixState.currency)}</span>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function recalcSix() {
+  sixState.customAmounts = null;
+  renderSixLevels();
+}
+
+function getSixCurrentAmount() {
+  return getSixAmounts()[sixState.level - 1];
+}
+
+function handleSixAction(type) {
+  const amt = getSixCurrentAmount();
+  if (sixState.useBalance && sixState.balance < amt) { showToast('Yetersiz bakiye!', 'loss'); return; }
+  const rate = (parseFloat(document.getElementById('sixRate').value) || 90) / 100;
+  addRipple(type === 'win' ? document.getElementById('sixWinBtn') : document.getElementById('sixLossBtn'));
+  flashScreen(type);
+  if (type === 'win') {
+    playWinSound();
+    const profit = Math.round(amt * rate);
+    sixState.profit += profit;
+    sixState.wins++;
+    sixState.total++;
+    if (sixState.useBalance) { sixState.balance += profit; updateSixBalanceDisplay(); }
+    sixState.level = 1;
+    sixState.history.unshift({ type:'WIN', amount:profit, date:now(), level:`T${sixState.level}` });
+    showToast(`+${fmt(profit, sixState.currency)} Kazandınız!`, 'win');
+  } else {
+    playLossSound();
+    sixState.loss += amt;
+    sixState.losses++;
+    sixState.total++;
+    if (sixState.useBalance) { sixState.balance -= amt; updateSixBalanceDisplay(); }
+    if (sixState.level < 6) sixState.level++;
+    sixState.history.unshift({ type:'LOSS', amount:amt, date:now(), level:`T${sixState.level}` });
+    showToast(`-${fmt(amt, sixState.currency)} Kaybedildi`, 'loss');
+  }
+  if (sixState.history.length > 100) sixState.history.pop();
+  renderSixLevels();
+  updateSixStats();
+  renderSixHistory();
+  saveUserData();
+}
+
+function updateSixStats() {
+  const net = sixState.profit - sixState.loss;
+  const wr = sixState.total > 0 ? (sixState.wins/sixState.total*100).toFixed(1) : 0;
+  setText('sixTotalProfit', fmt(sixState.profit, sixState.currency), 'win-color');
+  setText('sixTotalLoss', fmt(sixState.loss, sixState.currency), 'loss-color');
+  const netEl = document.getElementById('sixNetProfit');
+  if (netEl) { netEl.textContent = fmt(net, sixState.currency); netEl.className = 'stat-chip-value ' + (net>=0?'win-color':'loss-color'); }
+  setText('sixWinRate', `${wr}%`);
+  setText('sixTotalTrades', sixState.total);
+  setText('sixWinTrades', sixState.wins);
+  setText('sixLossTrades', sixState.losses);
+  setText('sixLevelDisp', `T${sixState.level}`);
+}
+
+function resetSixData() {
+  if (!confirm('Tüm veriler sıfırlanacak. Emin misiniz?')) return;
+  sixState = { level:1, profit:0, loss:0, wins:0, losses:0, total:0, currency:sixState.currency, history:[], balance:1000, useBalance:false, customAmounts:null };
+  document.getElementById('sixBalanceToggle').classList.remove('on');
+  document.getElementById('sixBalanceRow').style.display = 'none';
+  document.getElementById('sixBalance').value = 1000;
+  renderSixLevels();
+  updateSixStats();
+  renderSixHistory();
+  updateSixBalanceDisplay();
+  saveUserData();
+  showToast('Veriler sıfırlandı', 'info');
+}
+
+function updateSixBalanceDisplay() {
+  const el = document.getElementById('sixBalanceBig');
+  const sub = document.getElementById('sixBalanceSub');
+  if (sixState.useBalance) {
+    el.textContent = fmt(sixState.balance, sixState.currency);
+    el.classList.toggle('danger', sixState.balance < 100);
+    sub.textContent = sixState.balance < 100 ? '⚠ Düşük bakiye!' : 'Aktif takip';
+  } else {
+    el.textContent = '—';
+    el.classList.remove('danger');
+    sub.textContent = 'Bakiye takibi kapalı';
+  }
+}
+
+function toggleSixBalance() {
+  sixState.useBalance = !sixState.useBalance;
+  document.getElementById('sixBalanceToggle').classList.toggle('on', sixState.useBalance);
+  document.getElementById('sixBalanceRow').style.display = sixState.useBalance ? 'block' : 'none';
+  updateSixBalanceDisplay();
+}
+function updateSixBalance() {
+  sixState.balance = parseFloat(document.getElementById('sixBalance').value) || 0;
+  updateSixBalanceDisplay();
+}
+
+function renderSixHistory() {
+  const feed = document.getElementById('sixHistoryFeed');
+  const items = sixState.history.slice(0, 8);
+  if (!items.length) { feed.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);font-size:0.85rem">Henüz işlem yok</div>'; return; }
+  feed.innerHTML = items.map((h,i) => `
+    <div class="history-entry" style="animation-delay:${i*0.05}s">
+      <span class="history-badge ${h.type==='WIN'?'win':'loss'}">${h.type}</span>
+      <span class="history-time">${h.date}</span>
+      <span class="history-amt">${h.type==='WIN'?'+':'-'}${fmt(h.amount, sixState.currency)}</span>
+    </div>
+  `).join('');
+}
+
+function changeSixCurrency(sym) {
+  sixState.currency = sym;
+  renderCurrencyPills('sixCurrencyPills', sym, changeSixCurrency);
+  document.querySelectorAll('.six-cur-label').forEach(e => e.textContent = sym);
+  renderSixLevels();
+  updateSixStats();
+  renderSixHistory();
+  updateSixBalanceDisplay();
+}
+
+// ===== SINGLE TRADE =====
+function recalcSingle() {
+  const base = parseFloat(document.getElementById('singleAmount').value) || 100;
+  document.getElementById('singleT1Amt').textContent = fmt(base, singleState.currency);
+}
+
+function handleSingleAction(type) {
+  const base = parseFloat(document.getElementById('singleAmount').value) || 100;
+  const rate = (parseFloat(document.getElementById('singleRate').value) || 90) / 100;
+  if (singleState.useBalance && singleState.balance < base) { showToast('Yetersiz bakiye!', 'loss'); return; }
+  flashScreen(type);
+  if (type === 'win') {
+    playWinSound();
+    const profit = Math.round(base * rate);
+    singleState.profit += profit;
+    singleState.wins++;
+    singleState.total++;
+    if (singleState.useBalance) { singleState.balance += profit; updateSingleBalanceDisplay(); }
+    singleState.history.unshift({ type:'WIN', amount:profit, date:now() });
+    showToast(`+${fmt(profit, singleState.currency)} Kazandınız!`, 'win');
+  } else {
+    playLossSound();
+    singleState.loss += base;
+    singleState.losses++;
+    singleState.total++;
+    if (singleState.useBalance) { singleState.balance -= base; updateSingleBalanceDisplay(); }
+    singleState.history.unshift({ type:'LOSS', amount:base, date:now() });
+    showToast(`-${fmt(base, singleState.currency)} Kaybedildi`, 'loss');
+  }
+  if (singleState.history.length > 100) singleState.history.pop();
+  updateSingleStats();
+  renderSingleHistory();
+  saveUserData();
+}
+
+function updateSingleStats() {
+  const net = singleState.profit - singleState.loss;
+  const wr = singleState.total > 0 ? (singleState.wins/singleState.total*100).toFixed(1) : 0;
+  setText('singleTotalProfit', fmt(singleState.profit, singleState.currency), 'win-color');
+  setText('singleTotalLoss', fmt(singleState.loss, singleState.currency), 'loss-color');
+  const netEl = document.getElementById('singleNetProfit');
+  if (netEl) { netEl.textContent = fmt(net, singleState.currency); netEl.className = 'stat-chip-value ' + (net>=0?'win-color':'loss-color'); }
+  setText('singleWinRate', `${wr}%`);
+  setText('singleWinRate2', `${wr}%`);
+  setText('singleTotalTrades', singleState.total);
+  setText('singleWinTrades', singleState.wins);
+  setText('singleLossTrades', singleState.losses);
+}
+
+function resetSingleData() {
+  if (!confirm('Tüm veriler sıfırlanacak?')) return;
+  singleState = { profit:0, loss:0, wins:0, losses:0, total:0, currency:singleState.currency, history:[], balance:1000, useBalance:false };
+  document.getElementById('singleBalanceToggle').classList.remove('on');
+  document.getElementById('singleBalanceRow').style.display = 'none';
+  document.getElementById('singleBalance').value = 1000;
+  updateSingleStats();
+  renderSingleHistory();
+  updateSingleBalanceDisplay();
+  recalcSingle();
+  showToast('Veriler sıfırlandı', 'info');
+}
+
+function toggleSingleBalance() {
+  singleState.useBalance = !singleState.useBalance;
+  document.getElementById('singleBalanceToggle').classList.toggle('on', singleState.useBalance);
+  document.getElementById('singleBalanceRow').style.display = singleState.useBalance ? 'block' : 'none';
+  updateSingleBalanceDisplay();
+}
+function updateSingleBalance() {
+  singleState.balance = parseFloat(document.getElementById('singleBalance').value) || 0;
+  updateSingleBalanceDisplay();
+}
+function updateSingleBalanceDisplay() {
+  const el = document.getElementById('singleBalanceBig');
+  const sub = document.getElementById('singleBalanceSub');
+  if (singleState.useBalance) {
+    el.textContent = fmt(singleState.balance, singleState.currency);
+    el.classList.toggle('danger', singleState.balance < 100);
+    sub.textContent = singleState.balance < 100 ? '⚠ Düşük bakiye!' : 'Aktif takip';
+  } else {
+    el.textContent = '—';
+    el.classList.remove('danger');
+    sub.textContent = 'Bakiye takibi kapalı';
+  }
+}
+
+function renderSingleHistory() {
+  const feed = document.getElementById('singleHistoryFeed');
+  const items = singleState.history.slice(0,8);
+  if (!items.length) { feed.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);font-size:0.85rem">Henüz işlem yok</div>'; return; }
+  feed.innerHTML = items.map((h,i) => `
+    <div class="history-entry" style="animation-delay:${i*0.05}s">
+      <span class="history-badge ${h.type==='WIN'?'win':'loss'}">${h.type}</span>
+      <span class="history-time">${h.date}</span>
+      <span class="history-amt">${h.type==='WIN'?'+':'-'}${fmt(h.amount, singleState.currency)}</span>
+    </div>
+  `).join('');
+}
+
+function changeSingleCurrency(sym) {
+  singleState.currency = sym;
+  renderCurrencyPills('singleCurrencyPills', sym, changeSingleCurrency);
+  document.querySelectorAll('.single-cur-label').forEach(e => e.textContent = sym);
+  recalcSingle();
+  updateSingleStats();
+  renderSingleHistory();
+  updateSingleBalanceDisplay();
+}
+
+// ===== STAKE SYSTEM =====
+function setRiskMode(mode, pct) {
+  stakeState.riskMode = mode;
+  document.querySelectorAll('#riskModes .risk-pill').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+  document.getElementById('customRiskRow').classList.toggle('show', mode === 'custom');
+  if (mode === 'custom') {
+    stakeState.riskPct = parseFloat(document.getElementById('customRiskSlider').value);
+  } else {
+    stakeState.riskPct = pct;
+  }
+  updateStakeBalanceDisplay();
+  saveUserData();
+}
+function onCustomRiskInput() {
+  const v = parseFloat(document.getElementById('customRiskSlider').value);
+  document.getElementById('customRiskVal').textContent = String(v).replace('.', ',');
+  document.getElementById('customPctLabel').textContent = '%' + String(v).replace('.', ',');
+  if (stakeState.riskMode === 'custom') {
+    stakeState.riskPct = v;
+    updateStakeBalanceDisplay();
+    saveUserData();
+  }
+}
+function onStakeSettingsChange() {
+  stakeState.target = parseFloat(document.getElementById('stakeTarget').value) || 1;
+  stakeState.winPct = parseFloat(document.getElementById('stakeWinPct').value) || 1;
+  stakeState.lossPct = parseFloat(document.getElementById('stakeLossPct').value) || 1;
+  updateStakeBalanceDisplay();
+  saveUserData();
+}
+function applyStakeBalance() {
+  const v = parseFloat(document.getElementById('stakeBalanceInput').value);
+  if (!isNaN(v) && v >= 0) {
+    stakeState.balance = v;
+    stakeState.history = [];
+    stakeState.profit = 0; stakeState.loss = 0;
+    stakeState.wins = 0; stakeState.losses = 0; stakeState.total = 0;
+    stakeState.martingaleLossSum = 0; stakeState.martingaleStreak = 0;
+    updateStakeStats();
+    renderStakeHistory();
+    updateStakeBalanceDisplay();
+    saveUserData();
+    showToast('Bakiye güncellendi', 'info');
+  }
+}
+function toggleStakeMartingale() {
+  stakeState.martingaleOn = !stakeState.martingaleOn;
+  document.getElementById('stakeMartToggle').classList.toggle('on', stakeState.martingaleOn);
+  document.getElementById('mgBox').classList.toggle('show', stakeState.martingaleOn);
+  stakeState.martingaleLossSum = 0;
+  stakeState.martingaleStreak = 0;
+  updateStakeBalanceDisplay();
+  saveUserData();
+}
+function getStakeCalc() {
+  if (stakeState.martingaleOn && stakeState.martingaleLossSum > 0) {
+    const winFrac = (stakeState.winPct/100) || 0.0001;
+    const needed = stakeState.martingaleLossSum / winFrac;
+    let stake = Math.max(1, Math.round(needed));
+    let capped = false;
+    if (stake > stakeState.balance) { stake = Math.max(1, Math.round(stakeState.balance)); capped = true; }
+    return { stake, mode: 'martingale', capped };
+  }
+  let raw = stakeState.balance * (stakeState.riskPct/100);
+  let stake = Math.max(1, Math.round(raw));
+  if (stake > stakeState.balance) stake = Math.max(1, Math.round(stakeState.balance));
+  return { stake, mode: 'normal', capped: false };
+}
+function updateStakeBalanceDisplay() {
+  const cur = stakeState.currency;
+  document.getElementById('stakeBalanceBig').textContent = fmt(stakeState.balance, cur);
+  const remaining = Math.max(stakeState.target - stakeState.balance, 0);
+  document.getElementById('stakeBalanceSub').textContent = remaining > 0 ? `${fmt(remaining, cur)} kaldı` : 'Hedefe ulaşıldı 🎉';
+  const pct = stakeState.target > 0 ? Math.min(stakeState.balance / stakeState.target, 1) : 0;
+  const circumference = 226.2;
+  document.getElementById('stakeRingFg').style.strokeDashoffset = circumference - circumference*pct;
+  document.getElementById('stakeRingPctNum').textContent = Math.round(pct*100) + '%';
+  document.getElementById('stakeGoalPctDisp').textContent = Math.round(pct*100) + '%';
+
+  const { stake, mode, capped } = getStakeCalc();
+  const box = document.getElementById('stakeAmtDisplay');
+  box.classList.toggle('mg-active', mode === 'martingale');
+  document.getElementById('stakeAmtVal').textContent = fmt(stake, cur);
+  if (mode === 'martingale') {
+    document.getElementById('stakeAmtLbl').textContent = "Martingale Telafi Stake'i";
+    document.getElementById('stakeAmtSub').textContent = `${fmt(stakeState.martingaleLossSum, cur)} kaybı %${stakeState.winPct} kazançla karşılamak için`;
+  } else {
+    document.getElementById('stakeAmtLbl').textContent = 'Bir Sonraki İşlem İçin Stake';
+    document.getElementById('stakeAmtSub').textContent = `${fmt(stakeState.balance, cur)} bakiyenin %${String(stakeState.riskPct).replace('.',',')}'i`;
+  }
+  const warn = document.getElementById('stakeFloorWarn');
+  if (mode === 'martingale' && capped) {
+    warn.style.display = 'block';
+    warn.textContent = 'Bakiye tam telafi için yetersiz — tüm bakiye kullanılacak';
+  } else {
+    warn.style.display = 'none';
+  }
+  document.getElementById('stakeWinBtn').disabled = stakeState.balance < 1;
+  document.getElementById('stakeLossBtn').disabled = stakeState.balance < 1;
+  document.getElementById('mgStreakVal').textContent = stakeState.martingaleStreak;
+  document.getElementById('mgLossSumVal').textContent = fmt(stakeState.martingaleLossSum, cur);
+}
+function handleStakeAction(type) {
+  const { stake, mode } = getStakeCalc();
+  if (stake <= 0 || stakeState.balance <= 0) return;
+  addRipple(type === 'win' ? document.getElementById('stakeWinBtn') : document.getElementById('stakeLossBtn'));
+  flashScreen(type);
+  if (type === 'win') {
+    playWinSound();
+    const profit = Math.round(stake * (stakeState.winPct/100));
+    stakeState.balance += profit;
+    stakeState.profit += profit;
+    stakeState.wins++; stakeState.total++;
+    if (stakeState.martingaleOn) { stakeState.martingaleLossSum = 0; stakeState.martingaleStreak = 0; }
+    stakeState.history.unshift({ type:'WIN', amount:profit, date:now(), mg: mode==='martingale' });
+    showToast(`+${fmt(profit, stakeState.currency)} Kazandınız!`, 'win');
+  } else {
+    playLossSound();
+    const lossAmt = Math.round(stake * (stakeState.lossPct/100));
+    stakeState.balance = Math.max(stakeState.balance - lossAmt, 0);
+    stakeState.loss += lossAmt;
+    stakeState.losses++; stakeState.total++;
+    if (stakeState.martingaleOn) { stakeState.martingaleLossSum += lossAmt; stakeState.martingaleStreak++; }
+    stakeState.history.unshift({ type:'LOSS', amount:lossAmt, date:now(), mg: mode==='martingale' });
+    showToast(`-${fmt(lossAmt, stakeState.currency)} Kaybedildi`, 'loss');
+  }
+  if (stakeState.history.length > 100) stakeState.history.pop();
+  updateStakeStats();
+  renderStakeHistory();
+  updateStakeBalanceDisplay();
+  saveUserData();
+}
+function updateStakeStats() {
+  const net = stakeState.profit - stakeState.loss;
+  const wr = stakeState.total > 0 ? (stakeState.wins/stakeState.total*100).toFixed(1) : 0;
+  setText('stakeTotalProfit', fmt(stakeState.profit, stakeState.currency), 'win-color');
+  setText('stakeTotalLoss', fmt(stakeState.loss, stakeState.currency), 'loss-color');
+  const netEl = document.getElementById('stakeNetProfit');
+  if (netEl) { netEl.textContent = fmt(net, stakeState.currency); netEl.className = 'stat-chip-value ' + (net>=0?'win-color':'loss-color'); }
+  setText('stakeWinRate', `${wr}%`);
+  setText('stakeTotalTrades', stakeState.total);
+  setText('stakeWinTrades', stakeState.wins);
+  setText('stakeLossTrades', stakeState.losses);
+}
+function renderStakeHistory() {
+  const feed = document.getElementById('stakeHistoryFeed');
+  const items = stakeState.history.slice(0, 8);
+  if (!items.length) { feed.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);font-size:0.85rem">Henüz işlem yok</div>'; return; }
+  feed.innerHTML = items.map((h,i) => `
+    <div class="history-entry" style="animation-delay:${i*0.05}s">
+      <span class="history-badge ${h.type==='WIN'?'win':'loss'}">${h.type}${h.mg?' MG':''}</span>
+      <span class="history-time">${h.date}</span>
+      <span class="history-amt">${h.type==='WIN'?'+':'-'}${fmt(h.amount, stakeState.currency)}</span>
+    </div>
+  `).join('');
+}
+function resetStakeData() {
+  if (!confirm('Tüm stake verileri sıfırlanacak. Emin misiniz?')) return;
+  const cur = stakeState.currency;
+  stakeState = { balance:1000, target:70000, riskMode:'agr', riskPct:12.5, winPct:80, lossPct:100, currency:cur, martingaleOn:false, martingaleLossSum:0, martingaleStreak:0, profit:0, loss:0, wins:0, losses:0, total:0, history:[] };
+  hydrateStakeUI();
+  updateStakeStats();
+  renderStakeHistory();
+  updateStakeBalanceDisplay();
+  saveUserData();
+  showToast('Stake verileri sıfırlandı', 'info');
+}
+function changeStakeCurrency(sym) {
+  stakeState.currency = sym;
+  renderCurrencyPills('stakeCurrencyPills', sym, changeStakeCurrency);
+  document.querySelectorAll('.stake-cur-label').forEach(e => e.textContent = sym);
+  updateStakeStats();
+  renderStakeHistory();
+  updateStakeBalanceDisplay();
+  saveUserData();
+}
+function hydrateStakeUI() {
+  document.getElementById('stakeBalanceInput').value = Math.round(stakeState.balance);
+  document.getElementById('stakeTarget').value = Math.round(stakeState.target);
+  document.getElementById('stakeWinPct').value = stakeState.winPct;
+  document.getElementById('stakeLossPct').value = stakeState.lossPct;
+  document.getElementById('customRiskSlider').value = stakeState.riskPct;
+  document.getElementById('customRiskVal').textContent = String(stakeState.riskPct).replace('.',',');
+  document.getElementById('customPctLabel').textContent = '%' + String(stakeState.riskPct).replace('.',',');
+  document.querySelectorAll('#riskModes .risk-pill').forEach(b => b.classList.toggle('active', b.dataset.mode === stakeState.riskMode));
+  document.getElementById('customRiskRow').classList.toggle('show', stakeState.riskMode === 'custom');
+  document.getElementById('stakeMartToggle').classList.toggle('on', stakeState.martingaleOn);
+  document.getElementById('mgBox').classList.toggle('show', stakeState.martingaleOn);
+  renderCurrencyPills('stakeCurrencyPills', stakeState.currency, changeStakeCurrency);
+  document.querySelectorAll('.stake-cur-label').forEach(e => e.textContent = stakeState.currency);
+}
+
+// ===== CURRENCY PILLS =====
+function renderCurrencyPills(containerId, activeSym, onChange) {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  c.innerHTML = CURRENCIES.map(cur => `
+    <button class="currency-pill ${cur.sym===activeSym?'active':''}" onclick="(${onChange.toString()})('${cur.sym}')">
+      ${cur.sym} ${cur.code}
+    </button>
+  `).join('');
+}
+
+// ===== ADVANCED PANEL =====
+let advancedMode = 'six';
+function openAdvancedPanel(mode) {
+  advancedMode = mode;
+  document.getElementById('advancedPanel').classList.add('open');
+  document.getElementById('panelOverlay').classList.add('open');
+  renderAdvancedLevels();
+}
+function closeAdvancedPanel() {
+  document.getElementById('advancedPanel').classList.remove('open');
+  document.getElementById('panelOverlay').classList.remove('open');
+}
+function renderAdvancedLevels() {
+  const amounts = getSixAmounts();
+  const container = document.getElementById('advancedLevels');
+  container.innerHTML = amounts.map((a, i) => `
+    <div class="panel-level-row">
+      <span class="panel-level-tag">T${i+1}</span>
+      <input class="panel-level-input" id="advLevel${i+1}" type="number" value="${Math.round(a)}" min="1">
+    </div>
+  `).join('');
+}
+function saveCustomAmounts() {
+  const amounts = [];
+  for (let i = 1; i <= 6; i++) {
+    const v = parseFloat(document.getElementById(`advLevel${i}`).value);
+    if (!v || v <= 0) { showToast('Geçersiz miktar girdiniz', 'loss'); return; }
+    amounts.push(v);
+  }
+  sixState.customAmounts = amounts;
+  renderSixLevels();
+  closeAdvancedPanel();
+  showToast('Özel miktarlar kaydedildi!', 'win');
+  saveUserData();
+}
+function resetCustomAmounts() {
+  sixState.customAmounts = null;
+  renderSixLevels();
+  renderAdvancedLevels();
+  showToast('Otomatik hesaplamaya dönüldü', 'info');
+}
+
+// ===== HISTORY MODAL =====
+let historyModalMode = 'six';
+function openHistoryModal(mode) {
+  historyModalMode = mode;
+  const history = mode === 'six' ? sixState.history : mode === 'single' ? singleState.history : stakeState.history;
+  const currency = mode === 'six' ? sixState.currency : mode === 'single' ? singleState.currency : stakeState.currency;
+  const body = document.getElementById('modalBody');
+  if (!history.length) { body.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted)">Henüz işlem yok</div>'; }
+  else {
+    body.innerHTML = history.map(h => `
+      <div class="modal-entry">
+        <div class="modal-entry-left">
+          <div class="modal-entry-type ${h.type==='WIN'?'win':'loss'}">${h.type}${h.mg?' · MG':''}</div>
+          <div class="modal-entry-time">${h.date}</div>
+        </div>
+        <div class="modal-entry-amt">${h.type==='WIN'?'+':'-'}${fmt(h.amount, currency)}</div>
+      </div>
+    `).join('');
+  }
+  document.getElementById('historyModal').classList.add('open');
+}
+function closeHistoryModal() {
+  document.getElementById('historyModal').classList.remove('open');
+}
+
+// ===== EXPORT / IMPORT =====
+function exportData(mode) {
+  const data = mode === 'six' ? sixState : mode === 'single' ? singleState : stakeState;
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `alptrade-${mode}-${Date.now()}.json`;
+  a.click();
+  showToast('Veriler dışa aktarıldı', 'info');
+}
+function importData(event, mode) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = e => {
+    try {
+      const d = JSON.parse(e.target.result);
+      if (mode === 'six') {
+        sixState = d;
+        renderSixLevels();
+        updateSixStats();
+        renderSixHistory();
+        updateSixBalanceDisplay();
+      } else if (mode === 'single') {
+        singleState = d;
+        recalcSingle();
+        updateSingleStats();
+        renderSingleHistory();
+        updateSingleBalanceDisplay();
+      } else {
+        stakeState = Object.assign(stakeState, d);
+        hydrateStakeUI();
+        updateStakeStats();
+        renderStakeHistory();
+        updateStakeBalanceDisplay();
+      }
+      showToast('Veriler içe aktarıldı!', 'win');
+      saveUserData();
+    } catch(err) { showToast('Geçersiz dosya', 'loss'); }
+  };
+  r.readAsText(file);
+  event.target.value = '';
+}
+
+// ===== EFFECTS =====
+function addRipple(btn) {
+  const r = document.createElement('span');
+  r.className = 'ripple';
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  r.style.cssText = `width:${size}px;height:${size}px;left:${rect.width/2-size/2}px;top:${rect.height/2-size/2}px`;
+  btn.appendChild(r);
+  setTimeout(() => r.remove(), 700);
+}
+function flashScreen(type) {
+  const o = document.getElementById('flashOverlay');
+  o.className = 'flash-overlay';
+  void o.offsetWidth;
+  o.classList.add(type === 'win' ? 'win-flash' : 'loss-flash');
+}
+
+// ===== TOAST =====
+function showToast(msg, type='info') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  const icons = { win:'<i class="fas fa-check-circle"></i>', loss:'<i class="fas fa-xmark-circle"></i>', info:'<i class="fas fa-circle-info"></i>' };
+  t.innerHTML = `${icons[type]||''} ${msg}`;
+  c.appendChild(t);
+  setTimeout(() => {
+    t.style.animation = 'toastOut 0.3s ease both';
+    setTimeout(() => t.remove(), 300);
+  }, 2500);
+}
+
+// ===== UTILS =====
+function setText(id, val, className) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = val;
+  el.classList.add('counting');
+  setTimeout(() => el.classList.remove('counting'), 300);
+  if (className) el.className = 'stat-chip-value ' + className;
+}
+function now() {
+  return new Date().toLocaleString('tr-TR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+// ===== KEYBOARD =====
+document.addEventListener('keydown', e => {
+  if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+  if (currentPage === 'sixPage') {
+    if (e.key.toLowerCase() === 'w') handleSixAction('win');
+    if (e.key.toLowerCase() === 'l') handleSixAction('loss');
+  }
+  if (currentPage === 'singlePage') {
+    if (e.key.toLowerCase() === 'w') handleSingleAction('win');
+    if (e.key.toLowerCase() === 'l') handleSingleAction('loss');
+  }
+  if (currentPage === 'stakePage') {
+    if (e.key.toLowerCase() === 'w') handleStakeAction('win');
+    if (e.key.toLowerCase() === 'l') handleStakeAction('loss');
+  }
+  if (e.key === 'Escape') { closeHistoryModal(); closeAdvancedPanel(); closePicker(); }
+});
+
+// ===== INIT =====
+async function init() {
+  let savedTheme = '';
+  try {
+    const themeRes = await window.storage.get('at_theme', false);
+    if (themeRes && themeRes.value) savedTheme = themeRes.value;
+  } catch(e) { /* tema kaydı yok */ }
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  document.querySelectorAll('.theme-option').forEach(o => o.classList.toggle('active', o.dataset.theme === savedTheme));
+
+  initParticles();
+  renderCurrencyPills('sixCurrencyPills', '$', changeSixCurrency);
+  renderCurrencyPills('singleCurrencyPills', '$', changeSingleCurrency);
+  renderCurrencyPills('stakeCurrencyPills', stakeState.currency, changeStakeCurrency);
+  renderSixLevels();
+  updateSixStats();
+  updateSingleStats();
+  updateStakeStats();
+  renderStakeHistory();
+  updateSixBalanceDisplay();
+  updateSingleBalanceDisplay();
+  updateStakeBalanceDisplay();
+
+  await loadUserData();
+}
+
+init();
+</script>
+</body>
+</html>
